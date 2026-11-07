@@ -294,7 +294,6 @@ HOME = f"""
     </div>
     <div class="nexts">{upcoming}
     </div>
-    <p class="fine">Previews of work in progress. Which guides arrive first, and when, isn't decided yet.</p>
   </div>
 </section>
 
@@ -305,7 +304,6 @@ HOME = f"""
       <h2>Free to start. One purchase for every guide.</h2>
       <p>Jingshan Park is free and complete. You can open the Forbidden City and Summer Palace maps before you buy. A single in-app purchase, <strong>Unlock All Guides</strong>, unlocks their stories, audio and routes, plus every guide added later.</p>
       <p class="price-line"><strong>US$6.99</strong> one time · no subscription · nothing renews</p>
-      <p class="note">Price shown is for the United States; the App Store shows your local price.</p>
       <div class="cta">{store_button()}</div>
     </div>
     <img class="price-art" src="assets/img/art-throne.webp" alt="" loading="lazy" width="600" height="600">
