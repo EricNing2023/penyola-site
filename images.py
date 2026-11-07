@@ -69,14 +69,17 @@ def pois(payload):
 
 
 def save(im, path, tm, quality=80):
-    """Watermark, tag and write one web image (WebP or JPEG by extension)."""
+    """Watermark, tag and write one web image (WebP or JPEG by extension). Transparency is kept."""
+    alpha = im.getchannel('A') if 'A' in im.mode else None
     im = tm.encode(im.convert('RGB'), MARK, MODE='text')
+    if alpha:
+        im.putalpha(alpha)
     exif = Image.Exif()
     exif[0x8298] = COPYRIGHT  # Copyright
     exif[0x013B] = 'Penyola'  # Artist
     path.parent.mkdir(parents=True, exist_ok=True)
     fmt = 'JPEG' if path.suffix == '.jpg' else 'WEBP'
-    im.save(path, fmt, quality=quality, exif=exif.tobytes(), method=6 if fmt == 'WEBP' else None)
+    im.save(path, fmt, quality=quality, exif=exif.tobytes(), method=6 if fmt == 'WEBP' else None, **({'exact': True} if alpha else {}))
 
 
 def short(name):
