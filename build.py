@@ -102,14 +102,14 @@ GUIDES = [
 # the photo's credit (author, licence, source), as the licences require.
 GALLERY = [
     ('hall-of-supreme-harmony', 'Hall of Supreme Harmony', 'Forbidden City', None),
-    ('leshan-buddha', 'Leshan Giant Buddha', 'Sichuan', ('王计', 'CC BY 2.5', 'https://creativecommons.org/licenses/by/2.5/', 'https://commons.wikimedia.org/wiki/File:Leshan_Giant_Buddha,_20161101.jpg')),
-    ('longmen', 'Fengxian Temple, Longmen Grottoes', 'Henan', ('Gary Todd', 'CC0', 'https://creativecommons.org/publicdomain/zero/1.0/', 'https://commons.wikimedia.org/wiki/File:Fengxian_Temple_(Grand_Buddha_Niche),_Longmen_Grottoes_(14250928764).jpg')),
-    ('mogao', 'Nine-Storey Pagoda, Mogao Caves', 'Gansu', ('N509FZ', 'CC BY-SA 4.0', 'https://creativecommons.org/licenses/by-sa/4.0/', 'https://commons.wikimedia.org/wiki/File:Cave_96_of_Mogao_Grottoes_(20230918151944).jpg')),
+    ('foxiang-tower', 'Tower of Buddhist Incense', 'Summer Palace', None),
+    ('seventeen-arch-bridge', 'Seventeen-Arch Bridge', 'Summer Palace', None),
     ('wanchun', 'Wanchun Pavilion', 'Jingshan Park', None),
-    ('greeting-pine', 'Greeting Pine, Huangshan', 'Anhui', ('Memes', 'CC BY-SA 3.0', 'https://creativecommons.org/licenses/by-sa/3.0/', 'https://commons.wikimedia.org/wiki/File:Ying_Ke_Pine.JPG')),
-    ('jiuzhaigou', 'Five-Colour Pond, Jiuzhaigou', 'Sichuan', ('a Wikimedia Commons contributor', 'CC0', 'https://creativecommons.org/publicdomain/zero/1.0/', 'https://commons.wikimedia.org/wiki/File:Colorful_Pond_20260511-1.jpg')),
+    ('marble-boat', 'Marble Boat', 'Summer Palace', None),
+    ('long-corridor', 'Long Corridor', 'Summer Palace', None),
+    ('bronze-ox', 'Bronze Ox', 'Summer Palace', None),
+    ('imperial-garden', 'Imperial Garden', 'Forbidden City', None),
     ('stone-forest', 'Stone Forest', 'Yunnan', None),
-    ('elephant-trunk-hill', 'Elephant Trunk Hill', 'Guilin', ('螺钉', 'CC BY-SA 3.0', 'https://creativecommons.org/licenses/by-sa/3.0/', 'https://commons.wikimedia.org/wiki/File:Elephant_Trunk_Hill,_Guilin.jpg')),
 ]
 
 FEATURES = [
@@ -122,13 +122,19 @@ FEATURES = [
 ]
 
 # Maps in development, chosen from the most complete packages; previews only, no dates promised.
+# Map cards (images, crops and POI pins) come from images.py, which writes assets/img/map-cards.json.
+MAP_CARDS = json.loads((SITE / 'assets/img/map-cards.json').read_text())
+SHOWCASE = [
+    ('longmen', 'Longmen Grottoes, West Hill', 'Luoyang', '龙门石窟', 'Cliffs of carved Buddhas above the Yi River, with the great Vairocana at Fengxian Temple.'),
+    ('yungang', 'Yungang Grottoes', 'Datong', '云冈石窟', 'Fifth-century caves cut into a sandstone ridge, from the open-air Buddha of Cave 20 to the giant seated Buddha of Cave 5.'),
+]
 NEXT = [
-    ('temple-of-heaven', 'Temple of Heaven', 'Beijing', '天坛', 800, 752),
-    ('gulangyu', 'Gulangyu Island', 'Xiamen', '鼓浪屿', 800, 800),
-    ('lingering-garden', 'Lingering Garden', 'Suzhou', '留园', 800, 876),
-    ('wuhou-shrine', 'Wuhou Shrine', 'Chengdu', '武侯祠', 800, 837),
-    ('chengde', 'Chengde Mountain Resort', 'Hebei', '避暑山庄', 800, 867),
-    ('jiayuguan', 'Jiayuguan Fortress', 'Gansu', '嘉峪关', 1016, 800),
+    ('badaling', 'Badaling Great Wall', 'Beijing', '八达岭长城'),
+    ('huangshan', 'Huangshan', 'Anhui', '黄山'),
+    ('elephant-trunk-hill', 'Elephant Trunk Hill', 'Guilin', '象鼻山'),
+    ('jiuzhaigou', 'Jiuzhaigou Valley', 'Sichuan', '九寨沟'),
+    ('tianmen', 'Tianmen Mountain', 'Zhangjiajie', '天门山'),
+    ('mount-hua', 'Mount Hua', 'Shaanxi', '华山'),
 ]
 
 guides = ''.join(f"""
@@ -156,11 +162,28 @@ gallery = ''.join(f"""
       <figure class="bld{' fit' if key == 'wanchun' else ''}"><img src="assets/img/bld-{key}.webp" alt="Illustration of {name}" loading="lazy" width="800" height="600"><figcaption><strong>{name}</strong>{place}{gallery_credit(credit)}</figcaption></figure>"""
                   for key, name, place, credit in GALLERY)
 
+def pins(key):
+    return ''.join(f'''<span class="pin{' art' if p['art'] else ''}" style="left:{p['u'] * 100:.2f}%;top:{p['v'] * 100:.2f}%">{f'<img src="{p["art"]}" alt="" width="160" height="160" loading="lazy">' if p['art'] else ''}<b>{p['name']}</b></span>'''
+                   for p in MAP_CARDS[key]['pins'])
+
+
+def pin_map(key, name, extra=''):
+    c = MAP_CARDS[key]
+    return (f'<div class="pinmap"><img src="assets/img/next-{key}.webp" alt="Hand-drawn map of {name}, in development" '
+            f'loading="lazy" width="{c["width"]}" height="{c["height"]}">{pins(key)}</div>')
+
+
 upcoming = ''.join(f"""
       <figure class="next">
-        <img src="assets/img/next-{key}.webp" alt="Hand-drawn map of {name}, in development" loading="lazy" width="{w}" height="{h}">
+        {pin_map(key, name)}
         <figcaption><strong>{name}</strong><span>{region} · <span lang="zh-Hans">{zh}</span></span></figcaption>
-      </figure>""" for key, name, region, zh, w, h in NEXT)
+      </figure>""" for key, name, region, zh in NEXT)
+
+showcase = ''.join(f"""
+      <figure class="show">
+        {pin_map(key, name)}
+        <figcaption><strong>{name}</strong> <span>{region} · <span lang="zh-Hans">{zh}</span></span><p>{text}</p></figcaption>
+      </figure>""" for key, name, region, zh, text in SHOWCASE)
 
 HOME = f"""
 <section class="hero">
@@ -211,6 +234,18 @@ HOME = f"""
   </div>
 </section>
 
+<section class="band dark showcase">
+  <div class="wrap">
+    <div class="head">
+      <p class="eyebrow">Being drawn now</p>
+      <h2>China's great grottoes, by hand</h2>
+      <p class="lede">The next guides take you to the cave temples of Longmen and Yungang: every niche and carved Buddha on a hand-drawn panorama, with the same stories and audio as the Beijing guides.</p>
+    </div>
+    <div class="shows">{showcase}
+    </div>
+  </div>
+</section>
+
 <section class="band paper">
   <div class="wrap story">
     <div class="story-text">
@@ -242,8 +277,8 @@ HOME = f"""
   <div class="wrap">
     <div class="head">
       <p class="eyebrow">Drawn by hand</p>
-      <h2>Palaces, grottoes, giant Buddhas and wild places</h2>
-      <p class="lede">Every guide comes with watercolour-style drawings of what you'll see: imperial halls today, and soon cave temples, carved Buddhas, karst peaks and lakes from the guides we're drawing now.</p>
+      <h2>Halls, bridges, pavilions and bronze beasts</h2>
+      <p class="lede">Every guide comes with watercolour-style drawings of what you'll see, from throne halls and lakeside pavilions to the bronze ox that guards Kunming Lake.</p>
     </div>
     <div class="blds">{gallery}
     </div>
@@ -258,10 +293,6 @@ HOME = f"""
       <p class="lede">We're drawing guides to more than 30 other sites across China. Here are a few of the maps in progress. <strong>Unlock All Guides includes every guide we add</strong>, at no extra cost.</p>
     </div>
     <div class="nexts">{upcoming}
-      <figure class="next wide">
-        <img src="assets/img/next-longmen.webp" alt="Panoramic drawing of the Longmen Grottoes, in development" loading="lazy" width="1600" height="533">
-        <figcaption><strong>Longmen Grottoes, West Hill</strong><span>Luoyang · <span lang="zh-Hans">龙门石窟</span></span></figcaption>
-      </figure>
     </div>
     <p class="fine">Previews of work in progress. Which guides arrive first, and when, isn't decided yet.</p>
   </div>
@@ -465,9 +496,10 @@ DEMO = f"""
 """
 
 
-SITE_CREDITS = '<h2>Website illustrations</h2>\n  <p>Some illustrations on this website come from guides still in development. Where one was drawn after a photograph, the photographer and licence are credited below; each adapted illustration is shared under the same licence as its source.</p>\n  <ul>' + ''.join(
+SITE_CREDITS = ('<h2>Website illustrations</h2>\n  <p>Some illustrations on this website come from guides still in development. Where one was drawn after a photograph, the photographer and licence are credited below; each adapted illustration is shared under the same licence as its source.</p>\n  <ul>' + ''.join(
     f'\n    <li><strong>{name}</strong> &mdash; drawn after a <a href="{c[3]}">photograph</a> by {c[0]}, Wikimedia Commons, <a href="{c[2]}">{c[1]}</a></li>'
     for _, name, _, c in GALLERY if c) + '\n  </ul>'
+                if any(c for *_, c in GALLERY) else '')
 
 pages = {
     'index.html': ("Penyola – Offline guide to Beijing's imperial sights",
@@ -478,7 +510,7 @@ pages = {
     'privacy.html': ('Privacy Policy – Penyola', 'Penyola collects no data: no accounts, no analytics, no ads.', legal_page(legal_body('privacy')), ''),
     'terms.html': ('Terms of Use – Penyola', 'Terms of use for the Penyola app.', legal_page(legal_body('terms')), ''),
     'credits.html': ('Credits – Penyola', 'Content credits, map data attribution and open-source notices for Penyola.',
-                     legal_page(legal_body('content-credits') + '\n<hr>\n' + SITE_CREDITS + '\n<hr>\n' + legal_body('notice')), ''),
+                     legal_page(legal_body('content-credits') + '\n<hr>\n' + (SITE_CREDITS + '\n<hr>\n' if SITE_CREDITS else '') + legal_body('notice')), ''),
 }
 for file, (title, desc, main, cls) in pages.items():
     scripts = '<script src="assets/demo.js?v=' + hashlib.sha1((SITE / 'assets/demo.js').read_bytes()).hexdigest()[:8] + '" defer></script>\n' if file == 'demo.html' else ''

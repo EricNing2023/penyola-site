@@ -1,0 +1,146 @@
+{
+ "longmen": {
+  "width": 1400,
+  "height": 467,
+  "pins": [
+   {
+    "name": "Fengxian Temple",
+    "u": 0.3945,
+    "v": 0.4832,
+    "art": null
+   }
+  ]
+ },
+ "yungang": {
+  "width": 1400,
+  "height": 700,
+  "pins": [
+   {
+    "name": "Cave 20",
+    "u": 0.1787,
+    "v": 0.4419,
+    "art": "assets/img/poi/yungang-1.webp"
+   },
+   {
+    "name": "Cave 5",
+    "u": 0.3343,
+    "v": 0.451,
+    "art": "assets/img/poi/yungang-2.webp"
+   }
+  ]
+ },
+ "badaling": {
+  "width": 900,
+  "height": 900,
+  "pins": [
+   {
+    "name": "Heritage protection stele",
+    "u": 0.5001,
+    "v": 0.7072,
+    "art": "assets/img/poi/badaling-1.webp"
+   }
+  ]
+ },
+ "huangshan": {
+  "width": 900,
+  "height": 900,
+  "pins": [
+   {
+    "name": "Greeting Pine",
+    "u": 0.6904,
+    "v": 0.5098,
+    "art": "assets/img/poi/huangshan-1.webp"
+   },
+   {
+    "name": "Bright Summit",
+    "u": 0.5137,
+    "v": 0.2305,
+    "art": "assets/img/poi/huangshan-2.webp"
+   },
+   {
+    "name": "Lotus Peak",
+    "u": 0.2979,
+    "v": 0.4102,
+    "art": "assets/img/poi/huangshan-3.webp"
+   }
+  ]
+ },
+ "elephant-trunk-hill": {
+  "width": 900,
+  "height": 900,
+  "pins": [
+   {
+    "name": "Elephant Trunk Hill",
+    "u": 0.1709,
+    "v": 0.4443,
+    "art": "assets/img/poi/elephant-trunk-hill-1.webp"
+   },
+   {
+    "name": "Yunfeng Temple",
+    "u": 0.7617,
+    "v": 0.4151,
+    "art": "assets/img/poi/elephant-trunk-hill-2.webp"
+   }
+  ]
+ },
+ "jiuzhaigou": {
+  "width": 900,
+  "height": 900,
+  "pins": [
+   {
+    "name": "Five Flower Lake",
+    "u": 0.79,
+    "v": 0.6348,
+    "art": "assets/img/poi/jiuzhaigou-1.webp"
+   },
+   {
+    "name": "Long Lake",
+    "u": 0.193,
+    "v": 0.1608,
+    "art": "assets/img/poi/jiuzhaigou-2.webp"
+   },
+   {
+    "name": "Mirror Lake",
+    "u": 0.544,
+    "v": 0.7068,
+    "art": "assets/img/poi/jiuzhaigou-3.webp"
+   }
+  ]
+ },
+ "tianmen": {
+  "width": 900,
+  "height": 900,
+  "pins": [
+   {
+    "name": "Love Between Tree and Rock",
+    "u": 0.3984,
+    "v": 0.2754,
+    "art": "assets/img/poi/tianmen-1.webp"
+   },
+   {
+    "name": "Child-Wishing Cave",
+    "u": 0.6963,
+    "v": 0.1563,
+    "art": "assets/img/poi/tianmen-2.webp"
+   }
+  ]
+ },
+ "mount-hua": {
+  "width": 900,
+  "height": 900,
+  "pins": [
+   {
+    "name": "North Peak",
+    "u": 0.4854,
+    "v": 0.5527,
+    "art": "assets/img/poi/mount-hua-1.webp"
+   },
+   {
+    "name": "South Peak",
+    "u": 0.5146,
+    "v": 0.0469,
+    "art": "assets/img/poi/mount-hua-2.webp"
+   }
+  ]
+ }
+}
