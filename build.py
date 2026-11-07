@@ -14,8 +14,8 @@ LEGAL = RELEASE / 'app/engine/iphone/Maps/ScenicResources/legal'
 config = json.loads((RELEASE / 'release-config.json').read_text())
 EMAIL = config['support_email']
 APP_STORE = 'https://apps.apple.com/app/id6821783513'
-BASE = 'https://ericning2023.github.io/penyola/'
-RELEASED = False  # flip to True once the app is live on the App Store, then rebuild
+BASE = 'https://penyola.com/'
+RELEASED = True  # live on the App Store since 2026-11-06
 
 CSS_VERSION = hashlib.sha1((SITE / 'assets/site.css').read_bytes()).hexdigest()[:8]  # busts the Pages cache
 
@@ -33,6 +33,13 @@ def page(file, title, description, main, body_class='', scripts=''):
     nav = ''.join(f'<a href="{href}"{" aria-current=\"page\"" if href == file else ""}>{label}</a>'
                   for href, label in NAV)
     url = BASE + ('' if file == 'index.html' else file)
+    extra = f'\n<meta name="apple-itunes-app" content="app-id={APP_STORE.rsplit("id", 1)[1]}">' if RELEASED else ''
+    if file == 'index.html':
+        app = {'@context': 'https://schema.org', '@type': 'MobileApplication', 'name': 'Penyola', 'operatingSystem': 'iOS',
+               'applicationCategory': 'TravelApplication', 'url': BASE, 'offers': {'@type': 'Offer', 'price': '0', 'priceCurrency': 'USD'}}
+        if RELEASED:
+            app['installUrl'] = APP_STORE
+        extra += f'\n<script type="application/ld+json">{json.dumps(app)}</script>'
     return f'''<!doctype html>
 <html lang="en">
 <head>
@@ -50,7 +57,7 @@ def page(file, title, description, main, body_class='', scripts=''):
 <meta name="theme-color" content="#f8f3ea">
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="stylesheet" href="assets/site.css?v={CSS_VERSION}">
+<link rel="stylesheet" href="assets/site.css?v={CSS_VERSION}">{extra}
 </head>
 <body class="{body_class}">
 <header class="top">
@@ -477,4 +484,12 @@ for file, (title, desc, main, cls) in pages.items():
     scripts = '<script src="assets/demo.js?v=' + hashlib.sha1((SITE / 'assets/demo.js').read_bytes()).hexdigest()[:8] + '" defer></script>\n' if file == 'demo.html' else ''
     (SITE / file).write_text(page(file, title, desc, main, cls, scripts))
 (SITE / '.nojekyll').write_text('')
+
+# Crawlers: everything is open to search and AI assistants; the sitemap lists every page.
+(SITE / 'robots.txt').write_text(f'User-agent: *\nAllow: /\n\nSitemap: {BASE}sitemap.xml\n')
+(SITE / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+                                  + ''.join(f'  <url><loc>{BASE}{"" if f == "index.html" else f}</loc></url>\n' for f in pages) + '</urlset>\n')
+# IndexNow key file, so penyola-release/tools/ping_indexnow.py can tell Bing about changes.
+if key := config.get('indexnow_key'):
+    (SITE / f'{key}.txt').write_text(key)
 print(json.dumps(sorted(pages)))

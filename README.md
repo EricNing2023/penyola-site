@@ -1,7 +1,10 @@
 # Penyola website
 
-Public site for the Penyola iOS app, served by GitHub Pages from the root of `main`:
-https://ericning2023.github.io/penyola/
+Public site for the Penyola iOS app, pushed to the EricNing2023/penyola-site repository and served by GitHub Pages
+from the root of `main` at the custom domain
+https://penyola.com (the `CNAME` file sets it; DNS is at Cloudflare, records DNS-only).
+The old EricNing2023/penyola repository (https://ericning2023.github.io/penyola/) is frozen as the support site the
+1.0 App Store listing points to; this checkout keeps it as the `legacy` remote with pushing disabled.
 
 - `demo.html` in-browser demo of the free Jingshan guide (data exported from penyola-release by `build_demo()`)
 - `index.html` home · `support.html` support + FAQ (App Store Support URL is the site root)
@@ -20,8 +23,9 @@ This repository replaces the output of `penyola-release/tools/build_site.py`
 
 Fonts: Manrope, SIL Open Font License 1.1 (`assets/fonts/OFL.txt`).
 
-Before release, `RELEASED = False` in `build.py` shows a non-link "Coming soon to the App Store" badge.
-When the app is live, set it to `True`, rebuild and push. The badges then link to the App Store page.
+`RELEASED = True` in `build.py` (live since 2026-11-06): the badges link to the App Store and pages carry the Smart App Banner.
+The build also writes `robots.txt`, `sitemap.xml` and the IndexNow key file; after a push run
+`python3 ../penyola-release/tools/ping_indexnow.py`.
 
 The "In the works" section on the home page (`NEXT` in `build.py`) previews maps still in development (area-focused site maps only, no mountain landscapes),
 from `penyola-artifacts/test-catalog/`. It promises no dates. Update it as guides ship.
