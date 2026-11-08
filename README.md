@@ -14,6 +14,13 @@ The HTML files are generated. Edit `build.py` (home and support copy) or `assets
 
     python3 build.py            # reads ../penyola-release by default
 
+`support.html` is frozen at the published version by the user's decision: `build.py` skips writing it (`FROZEN`),
+so its copy and footer in `build.py` no longer reach the live page. Never commit a change to it without the user's
+approval; if it ever shows as modified, restore it with `git checkout -- support.html` before committing.
+
+Planning guides: copy in `articles.py`, rendered by `build.py` into folder URLs (`forbidden-city/…/`, `/guides/` hub, `/press/`).
+Every ticket, hours or timing fact needs an official source; mark unchecked ones `[[…]]` and set `CHECK = True` to highlight them locally.
+
 Privacy, terms and credits take their text from the legal files the app bundles
 (`penyola-release/app/engine/iphone/Maps/ScenicResources/legal/`), so rebuild whenever those change.
 The support email comes from `penyola-release/release-config.json`.

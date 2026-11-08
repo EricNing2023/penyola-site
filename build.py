@@ -614,7 +614,11 @@ for a in ARTICLES:
     main, heads[a.path + 'index.html'] = article_page(a)
     images[a.path + 'index.html'] = 'assets/img/' + a.image
     pages[a.path + 'index.html'] = (a.title, a.description, main, 'guide-doc')
+# Pages the user wants left exactly as published: never regenerated (they stay in the sitemap).
+FROZEN = {'support.html'}
 for file, (title, desc, main, cls) in pages.items():
+    if file in FROZEN:
+        continue
     scripts = '<script src="assets/demo.js?v=' + hashlib.sha1((SITE / 'assets/demo.js').read_bytes()).hexdigest()[:8] + '" defer></script>\n' if file == 'demo.html' else ''
     (SITE / file).parent.mkdir(parents=True, exist_ok=True)
     (SITE / file).write_text(page(file, title, desc, main, cls, scripts, heads.get(file, ''), images.get(file, 'assets/img/og.jpg')))
