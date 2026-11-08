@@ -327,3 +327,41 @@ a.store:hover { color: #fff; background: #222; }
 .show figcaption p { margin: 6px 0 0; color: #cdbba8; }
 @media (max-width: 600px) { .show .pin b { display: none; } }
 @media (max-width: 879px) { .next .pin b { display: none; } .next .pin img { width: 34px; height: 34px; border-width: 2px; } }
+
+/* Planning guides and press kit */
+.guide-page .checked { font-size: 14px; color: var(--muted); margin-top: -.4em; }
+.guide-art { margin: 0 0 24px; }
+.guide-art img { width: min(100%, 340px); margin: 0 auto; mix-blend-mode: multiply; }
+.guide-page ol { padding-left: 1.3em; }
+.guide-page li { margin-bottom: .6em; }
+.doc table { width: 100%; border-collapse: collapse; overflow-wrap: normal; font-size: 15px; margin: 0 0 1.2em; }
+.doc th, .doc td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); }
+.doc th { font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.table-scroll { overflow-x: auto; margin: 0 0 1.2em; }
+.table-scroll table { min-width: 640px; margin: 0; }
+.guide-cta { background: var(--paper-2); border-radius: 18px; padding: 22px; margin: 40px 0 8px; }
+.guide-cta p { margin: 0; color: var(--muted); }
+.guide-cta strong { color: var(--ink); }
+.guide-cta .cta { margin: 16px 0 0; }
+mark.chk { background: #fff1a8; color: inherit; padding: 0 2px; border-radius: 3px; }
+.facts { list-style: none; padding: 0 !important; display: grid; gap: 10px; }
+@media (min-width: 640px) { .facts { grid-template-columns: 1fr 1fr; } }
+.facts li { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin: 0; color: var(--muted); }
+.facts strong { display: block; font: 600 24px/1.2 var(--serif); color: var(--ink); }
+.press-shots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 1em; }
+@media (min-width: 720px) { .press-shots { grid-template-columns: repeat(4, 1fr); } }
+.press-shots figure { margin: 0; }
+.press-shots img { border-radius: 14px; border: 1px solid var(--line); }
+.press-shots figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.addr-cards { display: grid; gap: 12px; margin-bottom: 1em; }
+@media (min-width: 640px) { .addr-cards { grid-template-columns: 1fr 1fr; } }
+.addr-card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; break-inside: avoid; }
+.addr-card p { margin: 0; }
+.addr-zh { font-size: 30px; line-height: 1.25; font-weight: 600; }
+.addr-sub { font-size: 18px; margin-top: 4px !important; }
+.addr-en { font-size: 14px; color: var(--muted); margin-top: 8px !important; }
+@media print {
+  .top, .foot, .guide-cta, .guide-art, .chk { display: none !important; }
+  .addr-cards { grid-template-columns: 1fr; }
+  body { background: #fff; }
+}

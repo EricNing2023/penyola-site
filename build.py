@@ -7,6 +7,7 @@ published text never drifts from what users read in the app. Run after those fil
     python3 build.py [path/to/penyola-release]
 """
 import hashlib, json, pathlib, re, sys
+from articles import ARTICLES, CHECK, CHECKED
 
 SITE = pathlib.Path(__file__).resolve().parent
 RELEASE = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else SITE.parent / 'penyola-release')
@@ -19,6 +20,13 @@ RELEASED = True  # live on the App Store since 2026-11-06
 
 CSS_VERSION = hashlib.sha1((SITE / 'assets/site.css').read_bytes()).hexdigest()[:8]  # busts the Pages cache
 
+# Cloudflare Web Analytics: cookieless page counts. Stays off (no script, no privacy note) until the beacon token is set.
+CF_BEACON_TOKEN = None
+ANALYTICS = (f'\n<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=\'{{"token": "{CF_BEACON_TOKEN}"}}\'></script>'
+             if CF_BEACON_TOKEN else '')
+SITE_PRIVACY_NOTE = ('\n<h2>This website</h2>\n<p>penyola.com counts page visits with Cloudflare Web Analytics, which uses no cookies and does not identify or follow you across sites. '
+                     'The app itself collects no data.</p>') if CF_BEACON_TOKEN else ''
+
 NAV = [('index.html', 'Home'), ('demo.html', 'Try it'), ('support.html', 'Support'), ('privacy.html', 'Privacy'), ('credits.html', 'Credits')]
 
 
@@ -29,10 +37,11 @@ def legal_body(name):
     return re.search(r'<body>(.*)</body>', html, re.S).group(1).strip()
 
 
-def page(file, title, description, main, body_class='', scripts=''):
-    nav = ''.join(f'<a href="{href}"{" aria-current=\"page\"" if href == file else ""}>{label}</a>'
+def page(file, title, description, main, body_class='', scripts='', head='', image='assets/img/og.jpg'):
+    root = '../' * file.count('/')  # pages in folders (press/index.html) still use relative links
+    nav = ''.join(f'<a href="{root}{href}"{" aria-current=\"page\"" if href == file else ""}>{label}</a>'
                   for href, label in NAV)
-    url = BASE + ('' if file == 'index.html' else file)
+    url = BASE + file.removesuffix('index.html')
     extra = f'\n<meta name="apple-itunes-app" content="app-id={APP_STORE.rsplit("id", 1)[1]}">' if RELEASED else ''
     if file == 'index.html':
         app = {'@context': 'https://schema.org', '@type': 'MobileApplication', 'name': 'Penyola', 'operatingSystem': 'iOS',
@@ -40,6 +49,7 @@ def page(file, title, description, main, body_class='', scripts=''):
         if RELEASED:
             app['installUrl'] = APP_STORE
         extra += f'\n<script type="application/ld+json">{json.dumps(app)}</script>'
+    extra += head
     return f'''<!doctype html>
 <html lang="en">
 <head>
@@ -48,21 +58,21 @@ def page(file, title, description, main, body_class='', scripts=''):
 <title>{title}</title>
 <meta name="description" content="{description}">
 <link rel="canonical" href="{url}">
-<meta property="og:type" content="website">
+<meta property="og:type" content="{'article' if head else 'website'}">
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{url}">
-<meta property="og:image" content="{BASE}assets/img/og.jpg">
+<meta property="og:image" content="{BASE}{image}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#f8f3ea">
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="stylesheet" href="assets/site.css?v={CSS_VERSION}">{extra}
+<link rel="icon" type="image/png" href="{root}favicon.png">
+<link rel="apple-touch-icon" href="{root}apple-touch-icon.png">
+<link rel="stylesheet" href="{root}assets/site.css?v={CSS_VERSION}">{extra}{ANALYTICS}
 </head>
 <body class="{body_class}">
 <header class="top">
   <div class="wrap top-inner">
-    <a class="brand" href="index.html"><img src="assets/img/icon-256.png" alt="" width="32" height="32">Penyola</a>
+    <a class="brand" href="{root}index.html"><img src="{root}assets/img/icon-256.png" alt="" width="32" height="32">Penyola</a>
     <nav aria-label="Main">{nav}</nav>
   </div>
 </header>
@@ -73,7 +83,7 @@ def page(file, title, description, main, body_class='', scripts=''):
   <div class="wrap foot-inner">
     <p><strong>Penyola</strong> · offline guides to Beijing's imperial sights<br>
     Support: <a href="mailto:{EMAIL}">{EMAIL}</a></p>
-    <p><a href="support.html">Support</a> · <a href="privacy.html">Privacy Policy</a> · <a href="terms.html">Terms of Use</a> · <a href="credits.html">Credits</a></p>
+    <p><a href="{root}guides/">Planning guides</a> · <a href="{root}support.html">Support</a> · <a href="{root}press/">Press</a> · <a href="{root}privacy.html">Privacy Policy</a> · <a href="{root}terms.html">Terms of Use</a> · <a href="{root}credits.html">Credits</a></p>
     <p class="fine">Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>. Penyola is an independent guide and is not affiliated with the management of these sites. © 2026 Hong Ning.</p>
   </div>
 </footer>
@@ -499,27 +509,124 @@ SITE_CREDITS = ('<h2>Website illustrations</h2>\n  <p>Some illustrations on this
     for _, name, _, c in GALLERY if c) + '\n  </ul>'
                 if any(c for *_, c in GALLERY) else '')
 
+PRESS_SHOTS = [('press-screen-map.webp', 'The hand-drawn Forbidden City map'),
+               ('press-screen-story.webp', 'A highlight story with narrated audio'),
+               ('press-screen-route.webp', 'A suggested walk with times and stops')]
+press_shots = ''.join(f'\n    <figure><img src="../assets/img/{f}" alt="{alt}" width="400" height="869" loading="lazy"><figcaption>{alt}</figcaption></figure>'
+                      for f, alt in PRESS_SHOTS)
+
+PRESS = f'''
+<section class="doc wrap press">
+  <p class="eyebrow">Press</p>
+  <h1>Penyola press kit</h1>
+  <p class="lede">Penyola is an offline iPhone guide to Beijing's Forbidden City, Summer Palace and Jingshan Park, with hand-drawn maps, audio stories and walking routes.</p>
+
+  <p>Penyola is made for international visitors who want to understand what they are looking at. Each site has its own hand-drawn map: tap a hall, gate, tree or carved beast to read its story or hear it narrated in English. Suggested walks give times and stops, and the visitor information (hours, tickets, entrances and a Chinese address card for taxis) is in the same place.</p>
+  <p>Everything is stored on the phone, so the guide works with no signal, no roaming plan and no VPN. There is no account, no sign-in and no advertising, and the app collects no data. The maps and the illustrations of buildings and relics are drawn for Penyola.</p>
+  <p>Penyola is free to download, and the Jingshan Park guide is free and complete. One in-app purchase of US$6.99, Unlock All Guides, unlocks the Forbidden City and the Summer Palace and every guide added later, with no subscription. Penyola launched on 6 November 2026, in English, for iPhone, on the App Store in every region except mainland China, Hong Kong and Taiwan.</p>
+
+  <h2>Key facts</h2>
+  <ul class="facts">
+    <li><strong>3</strong> guides: Jingshan Park (free), the Forbidden City, the Summer Palace</li>
+    <li><strong>129</strong> illustrated highlights</li>
+    <li><strong>150+</strong> audio stories in English</li>
+    <li><strong>Offline</strong> everything is on the phone</li>
+    <li><strong>US$6.99</strong> one time for every guide, no subscription</li>
+    <li><strong>No data</strong> collected: no account, no ads, no analytics in the app</li>
+  </ul>
+
+  <h2>Images</h2>
+  <div class="press-shots">
+    <figure><img src="../assets/img/icon-256.png" alt="Penyola app icon" width="256" height="256" loading="lazy"><figcaption>App icon</figcaption></figure>{press_shots}
+  </div>
+  <p>These images and the illustrations on the <a href="../index.html">home page</a> may be used in coverage of Penyola. Larger files on request.</p>
+
+  <h2>Links and contact</h2>
+  <ul>
+    <li>App Store: <a href="{APP_STORE}">{APP_STORE.removeprefix('https://')}</a></li>
+    <li>Free Jingshan Park guide in the browser: <a href="../demo.html">penyola.com/demo.html</a></li>
+    <li>Press and partnerships: <a href="mailto:{EMAIL}">{EMAIL}</a></li>
+  </ul>
+</section>
+'''
+
+
+VERIFY = []
+MONTHS = 'January February March April May June July August September October November December'.split()
+
+
+def claims(html):
+    """[[...]] marks a ticket, hours or timing claim: highlighted while CHECK is on, plain text once checked."""
+    def mark(m):
+        VERIFY.append(re.sub(r'<[^>]+>', '', m.group(1)))
+        return f'<mark class="chk">{m.group(1)}</mark>' if CHECK else m.group(1)
+    return re.sub(r'\[\[(.+?)\]\]', mark, html, flags=re.S)
+
+
+def article_page(a):
+    root = '../' * a.path.count('/')
+    by_path = {x.path: x for x in ARTICLES}
+    related = ''.join(f'\n    <li><a href="{root}{p}">{by_path[p].h1}</a></li>' for p in a.related)
+    checked = f'{int(CHECKED[8:])} {MONTHS[int(CHECKED[5:7]) - 1]} {CHECKED[:4]}'
+    main = f'''
+<article class="doc wrap guide-page">
+  <p class="eyebrow">{a.eyebrow}</p>
+  <h1>{a.h1}</h1>
+  <p class="checked">Last checked: <time datetime="{CHECKED}">{checked}</time></p>
+  <figure class="guide-art"><img src="{root}assets/img/{a.image}" alt="{a.image_alt}" width="640" height="640"></figure>
+{claims(a.body).replace('@ROOT@', root)}
+  <aside class="guide-cta">
+    <p><strong>Penyola</strong> puts these sights on hand-drawn maps with audio stories and walking routes, offline on your iPhone. The Jingshan Park guide is free.</p>
+    <div class="cta">{store_button()}<a class="text-link" href="{root}demo.html">Try the free guide →</a></div>
+  </aside>
+  <h2>More planning guides</h2>
+  <ul>{related}
+  </ul>
+</article>
+'''
+    data = {'@context': 'https://schema.org', '@type': 'Article', 'headline': a.h1, 'description': a.description,
+            'image': BASE + 'assets/img/' + a.image, 'datePublished': CHECKED, 'dateModified': CHECKED,
+            'author': {'@type': 'Organization', 'name': 'Penyola', 'url': BASE},
+            'publisher': {'@type': 'Organization', 'name': 'Penyola', 'url': BASE, 'logo': {'@type': 'ImageObject', 'url': BASE + 'assets/img/icon-256.png'}},
+            'mainEntityOfPage': BASE + a.path, 'about': a.about}
+    return main, f'\n<script type="application/ld+json">{json.dumps(data, ensure_ascii=False)}</script>'
+
+
 pages = {
     'index.html': ("Penyola – Offline guide to Beijing's imperial sights",
                    'Hand-drawn maps, audio stories and walking routes for Jingshan Park, the Forbidden City and the Summer Palace. Works offline. Jingshan Park is free.',
                    HOME, 'home'),
     'demo.html': ('Try the Jingshan Park guide – Penyola', 'Try the free Jingshan Park guide from Penyola in your browser: hand-drawn map, audio stories and suggested walking routes.', DEMO, 'demo-page'),
     'support.html': ('Support – Penyola', 'Contact Penyola support and answers to common questions about offline use, purchases and restoring.', SUPPORT, ''),
-    'privacy.html': ('Privacy Policy – Penyola', 'Penyola collects no data: no accounts, no analytics, no ads.', legal_page(legal_body('privacy')), ''),
+    'privacy.html': ('Privacy Policy – Penyola', 'Penyola collects no data: no accounts, no analytics, no ads.', legal_page(legal_body('privacy') + SITE_PRIVACY_NOTE), ''),
     'terms.html': ('Terms of Use – Penyola', 'Terms of use for the Penyola app.', legal_page(legal_body('terms')), ''),
     'credits.html': ('Credits – Penyola', 'Content credits, map data attribution and open-source notices for Penyola.',
                      legal_page(legal_body('content-credits') + '\n<hr>\n' + (SITE_CREDITS + '\n<hr>\n' if SITE_CREDITS else '') + legal_body('notice')), ''),
 }
+GROUPS = [('Forbidden City', 'forbidden-city/'), ('Jingshan Park', 'jingshan-park/'), ('Summer Palace', 'summer-palace/'), ('Beijing', 'beijing/')]
+GUIDES_HUB = '\n<section class="doc wrap">\n  <p class="eyebrow">Plan your visit</p>\n  <h1>Planning guides</h1>\n  <p class="lede">Tickets, routes, timing and the stories behind the sights, for the Forbidden City, Jingshan Park and the Summer Palace.</p>' + ''.join(
+    f'\n  <h2>{name}</h2>\n  <ul>' + ''.join(f'\n    <li><a href="../{a.path}">{a.h1}</a></li>' for a in ARTICLES if a.path.startswith(prefix)) + '\n  </ul>'
+    for name, prefix in GROUPS) + '\n</section>\n'
+pages['guides/index.html'] = ('Planning guides – Penyola', 'Planning guides for Beijing: Forbidden City tickets and routes, Jingshan Park, the Summer Palace, and getting around without Google.', GUIDES_HUB, '')
+pages['press/index.html'] = ('Press kit – Penyola', 'Penyola press kit: one-line description, key facts, app icon and screenshots, and contact for press and partnerships.', PRESS, '')
+heads, images = {}, {}
+for a in ARTICLES:
+    main, heads[a.path + 'index.html'] = article_page(a)
+    images[a.path + 'index.html'] = 'assets/img/' + a.image
+    pages[a.path + 'index.html'] = (a.title, a.description, main, 'guide-doc')
 for file, (title, desc, main, cls) in pages.items():
     scripts = '<script src="assets/demo.js?v=' + hashlib.sha1((SITE / 'assets/demo.js').read_bytes()).hexdigest()[:8] + '" defer></script>\n' if file == 'demo.html' else ''
-    (SITE / file).write_text(page(file, title, desc, main, cls, scripts))
+    (SITE / file).parent.mkdir(parents=True, exist_ok=True)
+    (SITE / file).write_text(page(file, title, desc, main, cls, scripts, heads.get(file, ''), images.get(file, 'assets/img/og.jpg')))
 (SITE / '.nojekyll').write_text('')
 
 # Crawlers: everything is open to search and AI assistants; the sitemap lists every page.
 (SITE / 'robots.txt').write_text(f'User-agent: *\nAllow: /\n\nSitemap: {BASE}sitemap.xml\n')
 (SITE / 'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-                                  + ''.join(f'  <url><loc>{BASE}{"" if f == "index.html" else f}</loc></url>\n' for f in pages) + '</urlset>\n')
+                                  + ''.join(f'  <url><loc>{BASE}{f.removesuffix("index.html")}</loc></url>\n' for f in pages) + '</urlset>\n')
 # IndexNow key file, so penyola-release/tools/ping_indexnow.py can tell Bing about changes.
 if key := config.get('indexnow_key'):
     (SITE / f'{key}.txt').write_text(key)
+# Claims still to check on the official sites before CHECK is turned off (kept out of the repository by .gitignore).
+(SITE / 'verify-claims.txt').write_text(''.join(f'- {c}\n' for c in VERIFY))
 print(json.dumps(sorted(pages)))

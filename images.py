@@ -148,6 +148,31 @@ def older_images(tm):
         save(Image.open(orig), p, tm)
 
 
+# Planning guides and the press kit: one illustration per guide, three App Store screenshots.
+PAGE_ART = {
+    'page-wanchun-pavilion': APP / 'jingshan/cultural/wanchun-v2.png',
+    'page-meridian-gate': APP / 'forbiddencity/building-art/meridian-gate.png',
+    'page-gate-of-divine-might': APP / 'forbiddencity/building-art/gate-of-divine-might.png',
+    'page-palace-of-heavenly-purity': APP / 'forbiddencity/building-art/palace-of-heavenly-purity.png',
+    'page-hall-of-central-harmony': APP / 'forbiddencity/building-art/hall-of-central-harmony.png',
+    'page-hall-of-preserving-harmony': APP / 'forbiddencity/building-art/hall-of-preserving-harmony.png',
+    'page-roof-beasts': APP / 'forbiddencity/cultural/illustrations/fc-d014.png',
+}
+SCREENSHOTS = AI / 'penyola-artifacts/app-store/marketing-6.9-final'
+PRESS_SHOTS = {'press-screen-map': '01.png', 'press-screen-story': '03.png', 'press-screen-route': '04.png'}
+SHOT_W = 400
+
+
+def page_images(tm):
+    for name, src in PAGE_ART.items():
+        im = Image.open(src)
+        im = im.convert('RGBA' if 'A' in im.getbands() else 'RGB').resize((BLD_W, round(im.height * BLD_W / im.width)), Image.LANCZOS)
+        save(im, IMG / f'{name}.webp', tm)
+    for name, file in PRESS_SHOTS.items():
+        im = Image.open(SCREENSHOTS / file).convert('RGB')
+        save(im.resize((SHOT_W, round(im.height * SHOT_W / im.width)), Image.LANCZOS), IMG / f'{name}.webp', tm)
+
+
 def main():
     from trustmark import TrustMark
     tm = TrustMark(verbose=False, model_type='Q', encoding_type=TrustMark.Encoding.BCH_5)
@@ -155,6 +180,9 @@ def main():
         for f in sys.argv[2:]:
             text, found, _ = tm.decode(Image.open(f).convert('RGB'), MODE='text')
             print(f, 'PENYOLA watermark found' if found and text == MARK else 'no watermark found')
+        return
+    page_images(tm)
+    if sys.argv[1:2] == ['--pages']:  # only the guide and press images, leaving the others untouched
         return
     data = map_cards(tm)
     (IMG / 'map-cards.json').write_text(json.dumps(data, indent=1))
