@@ -21,7 +21,7 @@ RELEASED = True  # live on the App Store since 2026-11-06
 CSS_VERSION = hashlib.sha1((SITE / 'assets/site.css').read_bytes()).hexdigest()[:8]  # busts the Pages cache
 
 # Cloudflare Web Analytics: cookieless page counts. Stays off (no script, no privacy note) until the beacon token is set.
-CF_BEACON_TOKEN = None
+CF_BEACON_TOKEN = "56d7da6e93eb42188c1dbee2b9cd2e1e"  # Cloudflare Web Analytics site token (public, no cookies)
 ANALYTICS = (f'\n<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon=\'{{"token": "{CF_BEACON_TOKEN}"}}\'></script>'
              if CF_BEACON_TOKEN else '')
 SITE_PRIVACY_NOTE = ('\n<h2>This website</h2>\n<p>penyola.com counts page visits with Cloudflare Web Analytics, which uses no cookies and does not identify or follow you across sites. '
