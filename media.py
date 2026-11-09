@@ -10,6 +10,7 @@ LICENCES = {
     'CC0': 'https://creativecommons.org/publicdomain/zero/1.0/',
     'CC BY 2.0': 'https://creativecommons.org/licenses/by/2.0/',
     'CC BY 3.0': 'https://creativecommons.org/licenses/by/3.0/',
+    'CC BY 4.0': 'https://creativecommons.org/licenses/by/4.0/',
     'CC BY-SA 2.5': 'https://creativecommons.org/licenses/by-sa/2.5/',
     'CC BY-SA 3.0': 'https://creativecommons.org/licenses/by-sa/3.0/',
     'CC BY-SA 4.0': 'https://creativecommons.org/licenses/by-sa/4.0/',
@@ -30,6 +31,11 @@ PHOTOS = {
     'Forbidden City Beijing Shenwumen Gate.JPG': ('kallgan', 'CC BY-SA 3.0'),
     'Wanchun Pavilion, Jingshan Park, Beijing - November 2016 - 113.jpg': ('Another Believer', 'CC BY-SA 4.0'),
     'Jingshan (Coal Hill) Qiwang Tower (9869109674).jpg': ('Gary Todd', 'CC0'),
+    # First Time in Beijing videos (marketing/video/first-time/commons/credits.json). Checked 2026-11-09.
+    'Corner Tower of the Forbidden City, Beijing.jpg': ('ZhengZhou', 'CC BY-SA 4.0'),
+    '北京大兴国际机场 2024-05-15.jpg': ('xiquinhosilva', 'CC BY 4.0'),
+    'Beijing Daxing International Airport Terminal 20191005.jpg': ('Tyg728', 'CC BY-SA 4.0'),
+    'Beijing Capital International Airport Terminal 3 Interior 20090818.jpg': ('颐园新居', 'CC BY-SA 3.0'),
 }
 
 # Long video C (video group, marketing/video/v2/seo-handoff/). It appears on the page only once

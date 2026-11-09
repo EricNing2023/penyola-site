@@ -666,7 +666,7 @@ def article_page(a):
     return main, head
 
 
-VIDEO_PHOTO_CREDITS = ('<h2>Photos in our videos</h2>\n  <p>Our short videos about the Forbidden City and Jingshan Park use these photographs from Wikimedia Commons, credited again on the planning guide each video links to.</p>\n  <ul>'
+VIDEO_PHOTO_CREDITS = ('<h2>Photos in our videos</h2>\n  <p>Our short videos use these photographs from Wikimedia Commons. Where a video links to a planning guide, the photos are credited there too.</p>\n  <ul>'
                        + ''.join(f'\n    <li>{photo_credit(f)}</li>' for f in PHOTOS) + '\n  </ul>')
 
 pages = {
