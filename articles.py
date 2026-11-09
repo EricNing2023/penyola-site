@@ -21,13 +21,17 @@ class Article:
     description: str   # meta description, 155 characters or fewer
     eyebrow: str
     h1: str
-    image: str         # under assets/img/
+    image: str         # under assets/img/, or None for no illustration
     image_alt: str
     about: dict        # schema.org TouristAttraction
     body: str
     related: list = field(default_factory=list)
     photos: list = field(default_factory=list)  # Commons files from media.PHOTOS, credited at the end
     video: dict = None  # e.g. media.FC_ROUTE_VIDEO; shown once it has a youtube_id
+    checked: str = CHECKED  # date the facts on this page were last checked on the official sources
+    sources: list = field(default_factory=list)  # (label, official URL), listed at the end of the page
+    city: str = None  # part of that city's "first time" series (CITY_HUBS), e.g. 'beijing'
+    cta: bool = True  # False on pages about sights the app does not cover yet
 
 
 FORBIDDEN_CITY = {
@@ -722,6 +726,8 @@ VISA_FREE = Article(
     image_alt='Hand-drawn illustration of the Seventeen-Arch Bridge at the Summer Palace',
     about=BEIJING,
     related=['forbidden-city/tickets-for-foreigners/', 'summer-palace/one-day-route/', 'beijing/without-google/'],
+    checked='2026-11-09',
+    city='beijing',
     body='''
 <h2>Can I see Beijing in 2 days on visa-free transit?</h2>
 <p>Yes. Under China's 240-hour visa-free transit policy, travellers from 57 countries flying on to a third country can stay up to 10 days without a visa if they arrive through one of the 65 listed ports; check that your airport is on the official list. Two full days cover the essentials: the Forbidden City and Jingshan Park on day 1, the Great Wall and the Summer Palace on day 2. Book the Forbidden City before you fly, because tickets open seven days ahead and sell out.</p>
@@ -736,7 +742,7 @@ VISA_FREE = Article(
 
 <h2>Day 1: the Forbidden City and Jingshan Park</h2>
 <ul>
-  <li><strong>08:00</strong> Metro Line 1 to Tian'anmen East; walk through Tian'anmen to the Meridian Gate for the 08:30 opening. See <a href="@ROOT@forbidden-city/entrance-and-exit/">entrance and exits</a>.</li>
+  <li><strong>08:00</strong> Head for the Meridian Gate for the 08:30 opening; see <a href="@ROOT@forbidden-city/entrance-and-exit/">entrance and exits</a> for the way in.</li>
   <li><strong>08:30–12:00</strong> The Forbidden City along the central axis, with one side trip. See <a href="@ROOT@forbidden-city/half-day-route/">the half-day route</a>.</li>
   <li><strong>12:00</strong> Out through the Gate of Divine Might; lunch nearby.</li>
   <li><strong>13:30</strong> <a href="@ROOT@jingshan-park/best-view-of-the-forbidden-city/">Jingshan Park</a>: climb to Wanchun Pavilion for the view over the palace.</li>
@@ -746,7 +752,7 @@ VISA_FREE = Article(
 
 <h2>Day 2: the Great Wall and the Summer Palace</h2>
 <ul>
-  <li><strong>07:30</strong> Leave for the Great Wall. Mutianyu (about 1.5 hours by car) is less crowded and has a cable car; Badaling is reachable by high-speed train from Qinghe station. Book a driver or a small-group tour, as public buses take longer.</li>
+  <li><strong>07:30</strong> Leave for the Great Wall. Mutianyu has a cable car and is best reached by car; Badaling is on the S2 suburban line and the Beijing–Zhangjiakou high-speed railway. See <a href="@ROOT@beijing/great-wall-which-section/">which section to choose</a>.</li>
   <li><strong>09:00–12:30</strong> On the wall. Book Great Wall tickets online in advance.</li>
   <li><strong>14:30–17:30</strong> The <a href="@ROOT@summer-palace/one-day-route/">Summer Palace</a>, which lies on the way back into the city: East Palace Gate, the Long Corridor, the Marble Boat.</li>
   <li><strong>Evening</strong> Peking duck.</li>
@@ -779,6 +785,7 @@ NO_GOOGLE = Article(
     image_alt='Hand-drawn illustration of a gilded celestial globe from the Forbidden City',
     about=BEIJING,
     related=['beijing/chinese-address-cards/', 'beijing/visa-free-transit-2-day-plan/', 'forbidden-city/entrance-and-exit/'],
+    city='beijing',
     body='''
 <h2>Does Google work in Beijing?</h2>
 <p>No. Google Maps, Gmail, Search and YouTube are blocked in mainland China, and a VPN on hotel or local Wi-Fi is unreliable. The fixes are simple if you set them up before you fly: a mobile data plan that works in China, Apple Maps or Amap for directions, DiDi for taxis, and Alipay or WeChat Pay for paying. Roaming data and many travel eSIMs route through outside China, so some blocked apps work on them, but do not count on it.</p>
@@ -827,6 +834,7 @@ ADDRESS = Article(
     image_alt='Hand-drawn illustration of a bronze guardian lion from the Forbidden City',
     about=BEIJING,
     related=['beijing/without-google/', 'forbidden-city/entrance-and-exit/', 'summer-palace/one-day-route/'],
+    city='beijing',
     body='''
 <h2>How do I tell a taxi driver where to go in Beijing?</h2>
 <p>Show the name and address in Chinese characters: most Beijing drivers do not read English or pinyin. The cards below give each sight's gate in large characters with the full address underneath. Screenshot them or print this page (it prints one card per row), then point to the line you need.</p>
@@ -866,5 +874,186 @@ ADDRESS = Article(
 <p>Yes. Penyola's visitor information for each sight includes an address card in Chinese that you can show from your phone or save to your photos, offline. See also <a href="@ROOT@beijing/without-google/">getting around Beijing without Google</a>.</p>
 ''')
 
-ARTICLES = [JINGSHAN_VIEW, HALF_DAY, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
+GREAT_WALL = Article(
+    path='beijing/great-wall-which-section/',
+    short='Which Great Wall section',
+    title='Which Great Wall section to visit from Beijing',
+    description='Mutianyu, Badaling, Juyongguan or Simatai: tickets, opening hours, booking and how to get there for the Great Wall sections near Beijing, from official sources.',
+    eyebrow='Great Wall',
+    h1='Which section of the Great Wall should I visit from Beijing?',
+    image=None,
+    image_alt='',
+    about={'@type': 'TouristAttraction', 'name': 'Great Wall of China', 'alternateName': '长城', 'containedInPlace': {'@type': 'City', 'name': 'Beijing'}},
+    related=['beijing/3-day-itinerary/', 'beijing/visa-free-transit-2-day-plan/', 'beijing/chinese-address-cards/'],
+    city='beijing',
+    cta=False,
+    checked='2026-11-09',
+    sources=[('Mutianyu Great Wall: visitor information', 'https://www.mutianyugreatwall.com/cnInformation'),
+             ('Mutianyu Great Wall: official ticket booking', 'https://fx.mutianyugreatwall.com/fore/index?disCode=736798'),
+             ('Badaling Great Wall: opening hours and booking notices', 'https://www.badaling.cn/'),
+             ('Beijing Municipal Government: Badaling Great Wall', 'https://english.beijing.gov.cn/travellinginbeijing/attractions/202603/t20260320_4562521.html'),
+             ('Beijing Municipal Government: Juyongguan Great Wall', 'https://english.beijing.gov.cn/travellinginbeijing/attractions/202603/t20260320_4562519.html'),
+             ('Beijing Municipal Government: Mutianyu Great Wall', 'https://english.beijing.gov.cn/travellinginbeijing/attractions/202603/t20260325_4566115.html'),
+             ('Gubei Water Town and Simatai: tickets and hours', 'https://www.wtown.com/pc/ticket/index.html'),
+             ('Gubei Water Town and Simatai: questions and prices', 'https://www.wtown.com/pc/travel/question.html'),
+             ('Gubei Water Town and Simatai: getting there', 'https://www.wtown.com/pc/travel/index.html')],
+    body='''
+<h2>Which section is best for a first visit?</h2>
+<p>For most first-time visitors, Mutianyu: about 70 km from central Beijing, a restored wall with watchtowers along a wooded ridge, and a cable car that saves the steep climb. Badaling, about 60 km northwest, is the easiest to reach by public transport, by train. Juyongguan is a fortified pass with tickets at the gate, and Simatai is the one you can walk at night.</p>
+
+<h2>How do they compare?</h2>
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Section</th><th>Adult ticket</th><th>Booking</th><th>Best for</th></tr></thead>
+  <tbody>
+    <tr><td>Mutianyu</td><td>¥40; cable car ¥140 return</td><td>Online with your passport, up to 30 days ahead</td><td>A first visit with a car or tour; families who want the cable car</td></tr>
+    <tr><td>Badaling</td><td>¥40 (¥35, 1 November–31 March)</td><td>Online booking or at the gate</td><td>Going by train</td></tr>
+    <tr><td>Juyongguan</td><td>¥40 (¥35 off season)</td><td>At the gate</td><td>A shorter trip; a fortified pass in a valley</td></tr>
+    <tr><td>Simatai</td><td>¥40 by day; ¥200 at night</td><td>Through Gubei Water Town</td><td>An evening on the wall, with a night in the water town</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Prices are the official adult prices when we checked; each site also sells concession tickets.</p>
+
+<h2>Mutianyu: what do I need to know?</h2>
+<ul>
+  <li>Tickets are sold by real-name booking, up to 30 days ahead; book with your passport and show the same passport at the gate. Each ID can book one ticket per day.</li>
+  <li>The wall ticket is ¥40. The shuttle bus between the service area and the wall, a 6 km round trip, is ¥15 and recommended. The cable car is ¥140 return or ¥100 one way. The chairlift and toboggan are run by a separate company and need their own tickets.</li>
+  <li>Opening hours: 16 March–15 November, 07:30–18:00 on weekdays and 07:30–18:30 at weekends; 16 November–15 March, 08:00–17:30. Ticket sales stop an hour before closing and entry half an hour before.</li>
+  <li>Towers 1 to 20 are open by day.</li>
+  <li>You can cancel or change a booking until midnight on the day of your visit, as long as you have not entered.</li>
+  <li>By public transport: bus 916 from Dongzhimen to Huairou Beidajie, then bus H23, H3 or H71 to Mutianyujingqu.</li>
+</ul>
+
+<h2>Badaling: what do I need to know?</h2>
+<ul>
+  <li>Opening hours: 1 April–31 October, 06:30–16:30; 1 November–31 March, 07:30–16:00. The open section runs from North Tower 12 to South Tower 7.5.</li>
+  <li>Booking ahead is encouraged, through the official Chinese-language channels, and tickets are also sold at the gate, including on public holidays.</li>
+  <li>Getting there: the S2 suburban line or the Beijing–Zhangjiakou high-speed railway, or buses 919, 880 and 877. Check the railway timetable for the day.</li>
+</ul>
+
+<h2>Juyongguan: what do I need to know?</h2>
+<p>Juyongguan is a pass in a valley in Changping District, where the wall climbs steeply up both hillsides from a fortified gate. Tickets are sold at the gate: ¥40 in peak season, ¥35 off season. Hours are 08:30–17:30 in peak season and 08:30–16:30 off season.</p>
+
+<h2>Simatai: can I walk the Great Wall at night?</h2>
+<p>Yes, at Simatai, which is entered through Gubei Water Town, a resort in Miyun District about 120 km and two hours' drive from central Beijing. Night visits run all year:</p>
+<ul>
+  <li>May–October: 18:00–21:40.</li>
+  <li>November–April: 17:30–20:10 from Sunday to Thursday, 17:30–20:40 on Friday and Saturday.</li>
+  <li>By day, Simatai is open 09:00–17:00; entry closes at 16:10 from inside the water town and at 15:00 at the outside gate.</li>
+  <li>Tickets: Simatai ¥40 by day; the Great Wall at night ¥200; Gubei Water Town ¥140.</li>
+  <li>By public transport: bus 980 (express) from Dongzhimen to Miyun Xidaqiao, then bus Mi 51 towards Simatai.</li>
+</ul>
+<p>Jinshanling, across the border in Hebei, is popular with hikers. We could not confirm its current tickets and hours on an official site, so it is not covered here.</p>
+
+<h2>How do I get there without a tour?</h2>
+<p>The simplest is a car with a driver for the day, booked through your hotel or a ride-hailing app. For Badaling the train is easy. For Mutianyu and Simatai, public buses work but take a change and most of a morning. Save the Chinese name of the section to show your driver: Mutianyu <span lang="zh-Hans">慕田峪长城</span>, Badaling <span lang="zh-Hans">八达岭长城</span>, Juyongguan <span lang="zh-Hans">居庸关长城</span>, Simatai <span lang="zh-Hans">司马台长城</span>.</p>
+
+<h2>How long should I allow?</h2>
+<p>A full day, or a morning and early afternoon: about half the day on the road there and back, and two to three hours on the wall. Start early, especially in summer and at weekends. Bring water, and shoes with grip: the steps are steep and uneven. Do not plan the Forbidden City for the same day.</p>
+''')
+
+THREE_DAYS = Article(
+    path='beijing/3-day-itinerary/',
+    short='Beijing in 3 days',
+    title='Beijing in 3 days: a first-time itinerary',
+    description='A 3-day Beijing itinerary for a first visit: the Forbidden City and Jingshan, the Great Wall, the Temple of Heaven and the Summer Palace, with what to book ahead.',
+    eyebrow='Itinerary',
+    h1='Beijing in 3 days: a first-time itinerary',
+    image='bld-foxiang-tower.webp',
+    image_alt='Hand-drawn illustration of the Tower of Buddhist Incense at the Summer Palace',
+    about=BEIJING,
+    related=['beijing/great-wall-which-section/', 'beijing/visa-free-transit-2-day-plan/', 'forbidden-city/tickets-for-foreigners/', 'beijing/without-google/'],
+    city='beijing',
+    checked='2026-11-09',
+    sources=[('Palace Museum: visiting information', 'https://www.dpm.org.cn/Visit.html'),
+             ('Mutianyu Great Wall: visitor information', 'https://www.mutianyugreatwall.com/cnInformation'),
+             ('Beijing Municipal Government: Temple of Heaven', 'https://english.beijing.gov.cn/specials/parktours/guidevisitors/templeofheaven/'),
+             ('Beijing Municipal Government: Temple of Heaven tickets', 'https://english.beijing.gov.cn/specials/ticketing/parks/202407/t20240719_3753312.html'),
+             ('Beijing Municipal Government: Summer Palace', 'https://english.beijing.gov.cn/specials/parktours/guidevisitors/summerpalace/')],
+    body='''
+<h2>Is 3 days enough for Beijing?</h2>
+<p>Yes, for the essentials: the Forbidden City and Jingshan Park on day 1, the Great Wall on day 2, and the Temple of Heaven and the Summer Palace on day 3. It is a full plan with early starts. The one thing to fix first is the Forbidden City, which sells out: tickets go on sale at 20:00 Beijing time seven days ahead.</p>
+
+<h2>What should I book before I go?</h2>
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Sight</th><th>When booking opens</th><th>How</th></tr></thead>
+  <tbody>
+    <tr><td>Forbidden City</td><td>20:00, seven days ahead</td><td>Official ticket site, with your passport; <a href="@ROOT@forbidden-city/tickets-for-foreigners/">how to book</a></td></tr>
+    <tr><td>Great Wall at Mutianyu</td><td>Up to 30 days ahead</td><td>Official booking, with your passport; <a href="@ROOT@beijing/great-wall-which-section/">other sections</a></td></tr>
+    <tr><td>Temple of Heaven</td><td>1–7 days ahead</td><td>The "Temple of Heaven" WeChat account, with your passport</td></tr>
+    <tr><td>Summer Palace</td><td>Ahead of your visit</td><td>The "Summer Palace" WeChat account, with your passport</td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2>Which days should I avoid?</h2>
+<p>Mondays. The Forbidden City is closed on Mondays, and so are the halls inside the Temple of Heaven, except on public holidays. If your trip includes a Monday, make it your Great Wall day.</p>
+
+<h2>Day 1: the Forbidden City and Jingshan Park</h2>
+<ul>
+  <li><strong>Morning</strong> Be at the Meridian Gate for the 08:30 opening. Walk the central axis north, with one side trip: <a href="@ROOT@forbidden-city/half-day-route/">the half-day route</a> takes 3–4 hours. Check <a href="@ROOT@forbidden-city/entrance-and-exit/">the entrance and exits</a> before you set off.</li>
+  <li><strong>Lunch</strong> Out through the Gate of Divine Might, the north exit.</li>
+  <li><strong>Afternoon</strong> Cross the road to <a href="@ROOT@jingshan-park/best-view-of-the-forbidden-city/">Jingshan Park</a> and climb to Wanchun Pavilion for the view back over the palace roofs.</li>
+  <li><strong>Late afternoon</strong> Walk north into the hutong lanes around Shichahai and the Drum and Bell Towers.</li>
+</ul>
+
+<h2>Day 2: the Great Wall</h2>
+<ul>
+  <li><strong>Early start</strong> Leave by 07:30. Mutianyu, about 70 km away, opens at 07:30 from mid-March to mid-November and at 08:00 in winter. See <a href="@ROOT@beijing/great-wall-which-section/">which section to choose</a>.</li>
+  <li><strong>On the wall</strong> Allow two to three hours. Take the cable car up if you want to save the climb.</li>
+  <li><strong>Back in town</strong> A quiet evening: you will be tired. Peking duck is a good reward.</li>
+</ul>
+
+<h2>Day 3: the Temple of Heaven and the Summer Palace</h2>
+<ul>
+  <li><strong>Early morning</strong> The Temple of Heaven park opens at 06:00 (06:30 from November to March), and in the early morning it is full of locals doing tai chi, dancing and playing cards. The halls open at 08:00: the Hall of Prayer for Good Harvests, the Echo Wall and the Circular Mound Altar. Buy the combined ticket (¥34, or ¥28 from November to March) to see them. Metro: Line 5 to Tiantandongmen, Exit A.</li>
+  <li><strong>Afternoon</strong> Cross the city to the <a href="@ROOT@summer-palace/one-day-route/">Summer Palace</a> in the northwest. Walk the Long Corridor along Kunming Lake to the Marble Boat, and climb to the Tower of Buddhist Incense if you have the energy.</li>
+  <li><strong>Evening</strong> Back to the centre for dinner.</li>
+</ul>
+
+<h2>What if I have more time, or less?</h2>
+<ul>
+  <li><strong>2 days</strong> Drop the Temple of Heaven and pair the Great Wall with the Summer Palace on the way back; see <a href="@ROOT@beijing/visa-free-transit-2-day-plan/">Beijing in 2 days</a>.</li>
+  <li><strong>4 days or more</strong> Give the Summer Palace a whole day, and spend a morning in the hutongs and an afternoon at the Lama Temple or Beihai Park.</li>
+</ul>
+
+<h2>How do I get around?</h2>
+<p>The metro covers every stop on this plan except the Great Wall, and is signed in English. Taxis and DiDi are cheap for short hops; carry each place's name in Chinese. See <a href="@ROOT@beijing/without-google/">Beijing without Google</a> for payments and apps, and <a href="@ROOT@beijing/chinese-address-cards/">address cards</a> to show drivers.</p>
+''')
+
+ARTICLES = [GREAT_WALL, THREE_DAYS, JINGSHAN_VIEW, HALF_DAY, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
             SP_ROUTE, CORRIDOR, MARBLE, VISA_FREE, NO_GOOGLE, ADDRESS]
+
+
+# "First time in <city>" hubs at /<city>/first-time/. Each lists its published guides in trip order (paths not yet
+# written are skipped), and every guide with city=<key> links back here and to the city's detailed sight guides.
+CITY_HUBS = {
+    'beijing': dict(
+        name='Beijing',
+        title='First time in Beijing: a trip planning guide',
+        description='Plan a first trip to Beijing: what to set up before you land, how to get around, how many days you need, which Great Wall section to pick and how to book the Forbidden City.',
+        eyebrow='Beijing · trip planning',
+        h1='First time in Beijing',
+        about=BEIJING,
+        intro='''<p>A first trip to Beijing goes smoothly if you sort out three things before you fly: payments on your phone, a way to get online, and your Forbidden City booking, which opens seven days ahead and sells out. The guides below follow the order of a trip, from before you land to planning each day.</p>
+<h2>The short version</h2>
+<ul>
+  <li>Set up Alipay or WeChat Pay with your card and test it before you travel; see <a href="@ROOT@beijing/without-google/">Beijing without Google</a>.</li>
+  <li>Book the Forbidden City at 20:00 Beijing time, seven days ahead, with your passport; see <a href="@ROOT@forbidden-city/tickets-for-foreigners/">how to book</a>.</li>
+  <li>Carry the Chinese address of every place you are going; see <a href="@ROOT@beijing/chinese-address-cards/">address cards</a>.</li>
+  <li>Keep your passport with you: it is your ticket at the big sights.</li>
+</ul>''',
+        sections=[
+            ('Before you fly', ['beijing/before-you-land/', 'beijing/visa-free-entry/', 'beijing/without-google/']),
+            ('Arriving and getting around', ['beijing/airport-to-city/', 'beijing/getting-around/', 'beijing/chinese-address-cards/']),
+            ('Plan your days', ['beijing/visa-free-transit-2-day-plan/', 'beijing/3-day-itinerary/', 'beijing/4-day-itinerary/']),
+            ('The big sights', ['forbidden-city/tickets-for-foreigners/', 'forbidden-city/half-day-route/', 'beijing/great-wall-which-section/',
+                                'summer-palace/one-day-route/', 'beijing/temple-of-heaven/', 'jingshan-park/best-view-of-the-forbidden-city/', 'beijing/hutongs/']),
+            ('Timing and pitfalls', ['beijing/best-time-to-visit/', 'forbidden-city/crowds-and-best-time/', 'beijing/common-mistakes/']),
+        ],
+        sights_heading="Beijing's imperial sights in detail",
+        sights=['forbidden-city/half-day-route/', 'forbidden-city/tickets-for-foreigners/', 'summer-palace/one-day-route/', 'jingshan-park/best-view-of-the-forbidden-city/'],
+    ),
+}

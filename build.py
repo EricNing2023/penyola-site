@@ -7,7 +7,7 @@ published text never drifts from what users read in the app. Run after those fil
     python3 build.py [path/to/penyola-release]
 """
 import hashlib, json, pathlib, re, sys
-from articles import ARTICLES, CHECK, CHECKED
+from articles import ARTICLES, CHECK, CHECKED, CITY_HUBS
 from media import COMMONS, LICENCES, PHOTOS
 
 SITE = pathlib.Path(__file__).resolve().parent
@@ -594,6 +594,32 @@ def video_section(v):
     return html, data
 
 
+def nice_date(d):
+    return f'{int(d[8:])} {MONTHS[int(d[5:7]) - 1]} {d[:4]}'
+
+
+def hub_page(city, hub):
+    """A city's "first time" hub: the intro, then each published guide in trip order."""
+    by_path = {x.path: x for x in ARTICLES}
+    root = '../../'
+    sections = ''.join(f'\n  <h2>{heading}</h2>\n  <ul class="hub-list">' + ''.join(
+        f'\n    <li><a href="{root}{p}">{by_path[p].h1}</a><span>{by_path[p].description}</span></li>' for p in paths if p in by_path) + '\n  </ul>'
+        for heading, paths in hub['sections'] if any(p in by_path for p in paths))
+    checked = max(by_path[p].checked for _, paths in hub['sections'] for p in paths if p in by_path)
+    main = f'''
+<article class="doc wrap guide-page hub-page">
+  <p class="eyebrow">{hub['eyebrow']}</p>
+  <h1>{hub['h1']}</h1>
+  <p class="checked">Last checked: <time datetime="{checked}">{nice_date(checked)}</time></p>
+{hub['intro'].replace('@ROOT@', root)}{sections}
+</article>
+'''
+    data = {'@context': 'https://schema.org', '@type': 'CollectionPage', 'name': hub['h1'], 'description': hub['description'],
+            'url': BASE + f'{city}/first-time/', 'about': hub['about'],
+            'hasPart': [{'@type': 'Article', 'headline': by_path[p].h1, 'url': BASE + p} for _, paths in hub['sections'] for p in paths if p in by_path]}
+    return main, f'\n<script type="application/ld+json">{json.dumps(data, ensure_ascii=False)}</script>'
+
+
 def article_page(a):
     root = '../' * a.path.count('/')
     by_path = {x.path: x for x in ARTICLES}
@@ -602,25 +628,35 @@ def article_page(a):
     credits = ''.join(f'\n    <li>{photo_credit(f)}</li>' for f in a.photos)
     if credits:
         credits = f'\n  <section class="photo-credits">\n    <h2>Photo credits</h2>\n    <p>Photos in our videos for this page, from Wikimedia Commons:</p>\n    <ul>{credits}\n    </ul>\n  </section>'
-    checked = f'{int(CHECKED[8:])} {MONTHS[int(CHECKED[5:7]) - 1]} {CHECKED[:4]}'
+    checked = nice_date(a.checked)
+    eyebrow = a.eyebrow
+    sights = sources = ''
+    if a.city:
+        hub = CITY_HUBS[a.city]
+        eyebrow = f'<a href="{root}{a.city}/first-time/">First time in {hub["name"]}</a> · {a.eyebrow}'
+        sights = (f'\n  <h2>{hub["sights_heading"]}</h2>\n  <ul>' + ''.join(f'\n    <li><a href="{root}{p}">{by_path[p].h1}</a></li>' for p in hub['sights'] if p != a.path) + '\n  </ul>')
+    if a.sources:
+        sources = ('\n  <section class="sources">\n    <h2>Sources</h2>\n    <p>Checked on these official pages on ' + checked + ':</p>\n    <ul>'
+                   + ''.join(f'\n      <li><a href="{u}">{label}</a></li>' for label, u in a.sources) + '\n    </ul>\n  </section>')
+    art = f'\n  <figure class="guide-art"><img src="{root}assets/img/{a.image}" alt="{a.image_alt}" width="640" height="640"></figure>' if a.image else ''
+    cta = f'''
+  <aside class="guide-cta">
+    <p><strong>Penyola</strong> puts the Forbidden City, the Summer Palace and Jingshan Park on hand-drawn maps with audio stories and walking routes, offline on your iPhone. The Jingshan Park guide is free.</p>
+    <div class="cta">{store_button()}<a class="text-link" href="{root}demo.html">Try the free guide →</a></div>
+  </aside>''' if a.cta else ''
     main = f'''
 <article class="doc wrap guide-page">
-  <p class="eyebrow">{a.eyebrow}</p>
+  <p class="eyebrow">{eyebrow}</p>
   <h1>{a.h1}</h1>
-  <p class="checked">Last checked: <time datetime="{CHECKED}">{checked}</time></p>
-  <figure class="guide-art"><img src="{root}assets/img/{a.image}" alt="{a.image_alt}" width="640" height="640"></figure>
-{claims(a.body).replace('@ROOT@', root)}{video_html}
-  <aside class="guide-cta">
-    <p><strong>Penyola</strong> puts these sights on hand-drawn maps with audio stories and walking routes, offline on your iPhone. The Jingshan Park guide is free.</p>
-    <div class="cta">{store_button()}<a class="text-link" href="{root}demo.html">Try the free guide →</a></div>
-  </aside>
+  <p class="checked">Last checked: <time datetime="{a.checked}">{checked}</time></p>{art}
+{claims(a.body).replace('@ROOT@', root)}{video_html}{sights}{cta}
   <h2>More planning guides</h2>
   <ul>{related}
-  </ul>{credits}
+  </ul>{sources}{credits}
 </article>
 '''
     data = {'@context': 'https://schema.org', '@type': 'Article', 'headline': a.h1, 'description': a.description,
-            'image': BASE + 'assets/img/' + a.image, 'datePublished': CHECKED, 'dateModified': CHECKED,
+            'image': BASE + 'assets/img/' + (a.image or 'og.jpg'), 'datePublished': a.checked, 'dateModified': a.checked,
             'author': {'@type': 'Organization', 'name': 'Penyola', 'url': BASE},
             'publisher': {'@type': 'Organization', 'name': 'Penyola', 'url': BASE, 'logo': {'@type': 'ImageObject', 'url': BASE + 'assets/img/icon-256.png'}},
             'mainEntityOfPage': BASE + a.path, 'about': a.about}
@@ -646,15 +682,18 @@ pages = {
 }
 GROUPS = [('Forbidden City', 'forbidden-city/'), ('Jingshan Park', 'jingshan-park/'), ('Summer Palace', 'summer-palace/'), ('Beijing', 'beijing/')]
 GUIDES_HUB = '\n<section class="doc wrap">\n  <p class="eyebrow">Plan your visit</p>\n  <h1>Planning guides</h1>\n  <p class="lede">Tickets, routes, timing and the stories behind the sights, for the Forbidden City, Jingshan Park and the Summer Palace.</p>' + ''.join(
-    f'\n  <h2>{name}</h2>\n  <ul>' + ''.join(f'\n    <li><a href="../{a.path}">{a.h1}</a></li>' for a in ARTICLES if a.path.startswith(prefix)) + '\n  </ul>'
+    f'\n  <h2>{name}</h2>\n  <ul>' + (f'\n    <li><a href="../{prefix}first-time/">{CITY_HUBS[prefix[:-1]]["h1"]}</a></li>' if prefix[:-1] in CITY_HUBS else '') + ''.join(f'\n    <li><a href="../{a.path}">{a.h1}</a></li>' for a in ARTICLES if a.path.startswith(prefix)) + '\n  </ul>'
     for name, prefix in GROUPS) + '\n</section>\n'
 pages['guides/index.html'] = ('Planning guides – Penyola', 'Planning guides for Beijing: Forbidden City tickets and routes, Jingshan Park, the Summer Palace, and getting around without Google.', GUIDES_HUB, '')
 pages['press/index.html'] = ('Press kit – Penyola', 'Penyola press kit: one-line description, key facts, app icon and screenshots, and contact for press and partnerships.', PRESS, '')
 heads, images = {}, {}
 for a in ARTICLES:
     main, heads[a.path + 'index.html'] = article_page(a)
-    images[a.path + 'index.html'] = 'assets/img/' + a.image
+    images[a.path + 'index.html'] = 'assets/img/' + (a.image or 'og.jpg')
     pages[a.path + 'index.html'] = (a.title, a.description, main, 'guide-doc')
+for city, hub in CITY_HUBS.items():
+    main, heads[f'{city}/first-time/index.html'] = hub_page(city, hub)
+    pages[f'{city}/first-time/index.html'] = (hub['title'], hub['description'], main, 'guide-doc')
 # Pages the user wants left exactly as published: never regenerated (they stay in the sitemap).
 FROZEN = {'support.html'}
 for file, (title, desc, main, cls) in pages.items():
