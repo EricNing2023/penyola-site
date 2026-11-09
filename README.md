@@ -20,6 +20,10 @@ approval; if it ever shows as modified, restore it with `git checkout -- support
 
 Planning guides: copy in `articles.py`, rendered by `build.py` into folder URLs (`forbidden-city/…/`, `/guides/` hub, `/press/`).
 Every ticket, hours or timing fact needs an official source; mark unchecked ones `[[…]]` and set `CHECK = True` to highlight them locally.
+Third-party photos and videos live in `media.py`: Wikimedia Commons files (public domain, CC0, CC BY, CC BY-SA only), credited
+on the guide that uses them and on `credits.html`, never watermarked. The Forbidden City walk video appears on
+`forbidden-city/half-day-route/` (embed, chapters, full transcript, VideoObject) only once `youtube_id` and `upload_date` are set;
+when it goes live, add a sentence about the YouTube embed (youtube-nocookie) to the website section of the privacy page.
 
 Privacy, terms and credits take their text from the legal files the app bundles
 (`penyola-release/app/engine/iphone/Maps/ScenicResources/legal/`), so rebuild whenever those change.

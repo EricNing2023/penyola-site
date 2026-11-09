@@ -8,6 +8,7 @@ published text never drifts from what users read in the app. Run after those fil
 """
 import hashlib, json, pathlib, re, sys
 from articles import ARTICLES, CHECK, CHECKED
+from media import COMMONS, LICENCES, PHOTOS
 
 SITE = pathlib.Path(__file__).resolve().parent
 RELEASE = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else SITE.parent / 'penyola-release')
@@ -563,10 +564,44 @@ def claims(html):
     return re.sub(r'\[\[(.+?)\]\]', mark, html, flags=re.S)
 
 
+def photo_credit(f):
+    author, lic = PHOTOS[f]
+    return f'<a href="{COMMONS}{f.replace(" ", "_")}">{f.rsplit(".", 1)[0]}</a> by {author}, <a href="{LICENCES[lic]}">{lic}</a>'
+
+
+def video_section(v):
+    """The embedded walk video with chapters and full transcript, plus its VideoObject. Empty until it is uploaded."""
+    if not v or not v['youtube_id']:
+        return '', None
+    vid, draft = v['youtube_id'], json.loads((SITE.parent / v['draft']).read_text())
+    transcript = (SITE.parent / v['transcript']).read_text().strip()
+    paras = ''.join(f'\n    <h3>{b.split(chr(10), 1)[0]}</h3>\n    <p>{b.split(chr(10), 1)[1].strip()}</p>' if chr(10) in b else f'\n    <p>{b}</p>'
+                    for b in transcript.split('\n\n'))
+    clip = lambda c: f'{c["startOffset"] // 60}:{c["startOffset"] % 60:02d}'
+    chapters = ''.join(f'\n    <li><a href="https://www.youtube.com/watch?v={vid}&amp;t={c["startOffset"]}">{clip(c)}</a> {c["name"]}</li>' for c in draft['hasPart'])
+    html = f'''
+  <h2>Watch the walk</h2>
+  <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/{vid}" title="{v['name']}" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+  <ul class="chapters">{chapters}
+  </ul>
+  <details class="transcript"><summary>Full transcript</summary>{paras}
+  </details>'''
+    data = {'@context': 'https://schema.org', '@type': 'VideoObject', 'name': v['name'], 'description': v['description'],
+            'thumbnailUrl': [f'https://i.ytimg.com/vi/{vid}/maxresdefault.jpg'], 'uploadDate': v['upload_date'], 'duration': v['duration'],
+            'embedUrl': f'https://www.youtube.com/embed/{vid}', 'contentUrl': f'https://www.youtube.com/watch?v={vid}', 'inLanguage': 'en',
+            'transcript': transcript,
+            'hasPart': [{'@type': 'Clip', 'name': c['name'], 'startOffset': c['startOffset'], 'url': f'https://www.youtube.com/watch?v={vid}&t={c["startOffset"]}'} for c in draft['hasPart']]}
+    return html, data
+
+
 def article_page(a):
     root = '../' * a.path.count('/')
     by_path = {x.path: x for x in ARTICLES}
     related = ''.join(f'\n    <li><a href="{root}{p}">{by_path[p].h1}</a></li>' for p in a.related)
+    video_html, video = video_section(a.video)
+    credits = ''.join(f'\n    <li>{photo_credit(f)}</li>' for f in a.photos)
+    if credits:
+        credits = f'\n  <section class="photo-credits">\n    <h2>Photo credits</h2>\n    <p>Photos in our videos for this page, from Wikimedia Commons:</p>\n    <ul>{credits}\n    </ul>\n  </section>'
     checked = f'{int(CHECKED[8:])} {MONTHS[int(CHECKED[5:7]) - 1]} {CHECKED[:4]}'
     main = f'''
 <article class="doc wrap guide-page">
@@ -574,14 +609,14 @@ def article_page(a):
   <h1>{a.h1}</h1>
   <p class="checked">Last checked: <time datetime="{CHECKED}">{checked}</time></p>
   <figure class="guide-art"><img src="{root}assets/img/{a.image}" alt="{a.image_alt}" width="640" height="640"></figure>
-{claims(a.body).replace('@ROOT@', root)}
+{claims(a.body).replace('@ROOT@', root)}{video_html}
   <aside class="guide-cta">
     <p><strong>Penyola</strong> puts these sights on hand-drawn maps with audio stories and walking routes, offline on your iPhone. The Jingshan Park guide is free.</p>
     <div class="cta">{store_button()}<a class="text-link" href="{root}demo.html">Try the free guide →</a></div>
   </aside>
   <h2>More planning guides</h2>
   <ul>{related}
-  </ul>
+  </ul>{credits}
 </article>
 '''
     data = {'@context': 'https://schema.org', '@type': 'Article', 'headline': a.h1, 'description': a.description,
@@ -589,8 +624,14 @@ def article_page(a):
             'author': {'@type': 'Organization', 'name': 'Penyola', 'url': BASE},
             'publisher': {'@type': 'Organization', 'name': 'Penyola', 'url': BASE, 'logo': {'@type': 'ImageObject', 'url': BASE + 'assets/img/icon-256.png'}},
             'mainEntityOfPage': BASE + a.path, 'about': a.about}
-    return main, f'\n<script type="application/ld+json">{json.dumps(data, ensure_ascii=False)}</script>'
+    head = f'\n<script type="application/ld+json">{json.dumps(data, ensure_ascii=False)}</script>'
+    if video:
+        head += f'\n<script type="application/ld+json">{json.dumps(video, ensure_ascii=False)}</script>'
+    return main, head
 
+
+VIDEO_PHOTO_CREDITS = ('<h2>Photos in our videos</h2>\n  <p>Our short videos about the Forbidden City and Jingshan Park use these photographs from Wikimedia Commons, credited again on the planning guide each video links to.</p>\n  <ul>'
+                       + ''.join(f'\n    <li>{photo_credit(f)}</li>' for f in PHOTOS) + '\n  </ul>')
 
 pages = {
     'index.html': ("Penyola – Offline guide to Beijing's imperial sights",
@@ -601,7 +642,7 @@ pages = {
     'privacy.html': ('Privacy Policy – Penyola', 'Penyola collects no data: no accounts, no analytics, no ads.', legal_page(legal_body('privacy') + SITE_PRIVACY_NOTE), ''),
     'terms.html': ('Terms of Use – Penyola', 'Terms of use for the Penyola app.', legal_page(legal_body('terms')), ''),
     'credits.html': ('Credits – Penyola', 'Content credits, map data attribution and open-source notices for Penyola.',
-                     legal_page(legal_body('content-credits') + '\n<hr>\n' + (SITE_CREDITS + '\n<hr>\n' if SITE_CREDITS else '') + legal_body('notice')), ''),
+                     legal_page(legal_body('content-credits') + '\n<hr>\n' + (SITE_CREDITS + '\n<hr>\n' if SITE_CREDITS else '') + VIDEO_PHOTO_CREDITS + '\n<hr>\n' + legal_body('notice')), ''),
 }
 GROUPS = [('Forbidden City', 'forbidden-city/'), ('Jingshan Park', 'jingshan-park/'), ('Summer Palace', 'summer-palace/'), ('Beijing', 'beijing/')]
 GUIDES_HUB = '\n<section class="doc wrap">\n  <p class="eyebrow">Plan your visit</p>\n  <h1>Planning guides</h1>\n  <p class="lede">Tickets, routes, timing and the stories behind the sights, for the Forbidden City, Jingshan Park and the Summer Palace.</p>' + ''.join(

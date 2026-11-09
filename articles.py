@@ -7,6 +7,8 @@ Facts come from the app's own site data (penyola-release ScenicResources) unless
 """
 from dataclasses import dataclass, field
 
+from media import FC_ROUTE_VIDEO
+
 CHECK = False
 CHECKED = '2026-11-06'  # "Last checked" date shown on every guide
 
@@ -24,6 +26,8 @@ class Article:
     about: dict        # schema.org TouristAttraction
     body: str
     related: list = field(default_factory=list)
+    photos: list = field(default_factory=list)  # Commons files from media.PHOTOS, credited at the end
+    video: dict = None  # e.g. media.FC_ROUTE_VIDEO; shown once it has a youtube_id
 
 
 FORBIDDEN_CITY = {
@@ -50,6 +54,7 @@ JINGSHAN_VIEW = Article(
     image_alt='Hand-drawn illustration of Wanchun Pavilion on top of Jingshan Hill',
     about=JINGSHAN,
     related=['forbidden-city/half-day-route/', 'forbidden-city/tickets-for-foreigners/'],
+    photos=['Jingshan (Coal Hill) Qiwang Tower (9869109674).jpg', 'Wanchun Pavilion, Jingshan Park, Beijing - November 2016 - 113.jpg', 'Views of the Forbidden City from Jingshan Park 1.jpg'],
     body='''
 <h2>Where is the best view of the Forbidden City?</h2>
 <p>The best view is from Wanchun Pavilion on top of Jingshan Hill, 94.2 metres above sea level and roughly 45 metres above the streets around it, directly north of the palace: a 10–20 minute climb on stone paths and steps gives you the whole run of golden roofs from the Gate of Divine Might down to the Meridian Gate. Entry costs ¥2, and the park's South Gate is just across the road from the Forbidden City's north exit.</p>
@@ -108,6 +113,8 @@ HALF_DAY = Article(
     image_alt='Hand-drawn illustration of the Palace of Heavenly Purity',
     about=FORBIDDEN_CITY,
     related=['forbidden-city/tickets-for-foreigners/', 'forbidden-city/entrance-and-exit/', 'forbidden-city/hall-of-supreme-harmony/', 'jingshan-park/best-view-of-the-forbidden-city/'],
+    photos=['Views of the Forbidden City from Jingshan Park 1.jpg', 'Wumen.jpg', 'Hall of Supreme Harmony.JPG', 'Beijing China Forbidden-City-03.jpg', 'Beijing Forbidden City Hall of Central Harmony terraces-20071018-RM-143613.jpg', '保和殿 Baohe Hall - panoramio.jpg', 'Palace of Heavenly Purity (20220218132818).jpg', '交泰殿 Jiaotai Hall - panoramio.jpg', 'Palace of Earthly Tranquility (20220218133044).jpg', 'Imperial Garden (54448349292).jpg', 'Forbidden City Beijing Shenwumen Gate.JPG', 'Wanchun Pavilion, Jingshan Park, Beijing - November 2016 - 113.jpg'],
+    video=FC_ROUTE_VIDEO,
     body='''
 <h2>How long do you need in the Forbidden City?</h2>
 <p>Half a day is enough: allow 3–4 hours, which covers the central axis from the Meridian Gate to the Gate of Divine Might (about 1 hour 40 minutes of walking and short stops before queues) plus one side area such as the Clock Gallery or the Treasure Gallery. A full day lets you add both galleries and the quieter western palaces.</p>
