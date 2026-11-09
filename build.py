@@ -656,7 +656,7 @@ def article_page(a):
 </article>
 '''
     data = {'@context': 'https://schema.org', '@type': 'Article', 'headline': a.h1, 'description': a.description,
-            'image': BASE + 'assets/img/' + (a.image or 'og.jpg'), 'datePublished': a.checked, 'dateModified': a.checked,
+            'image': BASE + 'assets/img/' + (a.image or 'og.jpg'), 'datePublished': a.published or a.checked, 'dateModified': a.checked,
             'author': {'@type': 'Organization', 'name': 'Penyola', 'url': BASE},
             'publisher': {'@type': 'Organization', 'name': 'Penyola', 'url': BASE, 'logo': {'@type': 'ImageObject', 'url': BASE + 'assets/img/icon-256.png'}},
             'mainEntityOfPage': BASE + a.path, 'about': a.about}

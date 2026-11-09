@@ -29,10 +29,25 @@ class Article:
     photos: list = field(default_factory=list)  # Commons files from media.PHOTOS, credited at the end
     video: dict = None  # e.g. media.FC_ROUTE_VIDEO; shown once it has a youtube_id
     checked: str = CHECKED  # date the facts on this page were last checked on the official sources
+    published: str = None  # first publication date, if earlier than checked (datePublished)
     sources: list = field(default_factory=list)  # (label, official URL), listed at the end of the page
     city: str = None  # part of that city's "first time" series (CITY_HUBS), e.g. 'beijing'
     cta: bool = True  # False on pages about sights the app does not cover yet
 
+
+# Official pages behind the facts on the older guides (listed under "Sources" on each page).
+DPM_VISIT = ('Palace Museum: visiting information', 'https://www.dpm.org.cn/Visit.html')
+DPM_RULES = ('Palace Museum: visitor rules (booking, sessions, refunds, bags)', 'https://www.dpm.org.cn/singles_detail/259831.html')
+DPM_BOOKING = ('Palace Museum: official ticket booking', 'https://bookingticket.dpm.org.cn/')
+DPM_GATE = ('Palace Museum: Gate of Supreme Harmony works notice', 'https://www.dpm.org.cn/announce_detail/379422.html')
+DPM_HALL = ('Palace Museum: Hall of Supreme Harmony', 'https://www.dpm.org.cn/explore/building/236465.html')
+DPM_GUIDES = ('Palace Museum: guided tour routes and fees', 'https://www.dpm.org.cn/announce_detail/239321.html')
+JS_PARK = ('Beijing Municipal Government: Jingshan Park', 'https://english.beijing.gov.cn/specials/parktours/guidevisitors/jingshanpark/')
+JS_TICKETS = ('Beijing Municipal Government: Jingshan Park tickets', 'https://english.beijing.gov.cn/specials/ticketing/parks/202407/t20240719_3753324.html')
+JS_PARKS_CENTRE = ('Beijing Municipal Administration Center of Parks: Jingshan Park', 'https://gygl.beijing.gov.cn/mlgy/mlgy_lsmy/201911/t20191129_732675.html')
+SP_GOV = ('Beijing Municipal Government: Summer Palace', 'https://english.beijing.gov.cn/specials/parktours/guidevisitors/summerpalace/')
+SP_SITE = ('Summer Palace official site: hours, tickets and boats', 'https://www.summerpalace.net.cn/')
+NIA_TRANSIT = ('National Immigration Administration: visa-free transit', 'https://www.nia.gov.cn/n741440/n741577/c1731205/content.html')
 
 FORBIDDEN_CITY = {
     '@type': 'TouristAttraction', 'name': 'Forbidden City (Palace Museum)', 'alternateName': '故宫',
@@ -59,6 +74,9 @@ JINGSHAN_VIEW = Article(
     about=JINGSHAN,
     related=['forbidden-city/half-day-route/', 'forbidden-city/tickets-for-foreigners/'],
     photos=['Jingshan (Coal Hill) Qiwang Tower (9869109674).jpg', 'Wanchun Pavilion, Jingshan Park, Beijing - November 2016 - 113.jpg', 'Views of the Forbidden City from Jingshan Park 1.jpg'],
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[JS_TICKETS, JS_PARK, JS_PARKS_CENTRE, DPM_VISIT],
     body='''
 <h2>Where is the best view of the Forbidden City?</h2>
 <p>The best view is from Wanchun Pavilion on top of Jingshan Hill, 94.2 metres above sea level and roughly 45 metres above the streets around it, directly north of the palace: a 10–20 minute climb on stone paths and steps gives you the whole run of golden roofs from the Gate of Divine Might down to the Meridian Gate. Entry costs ¥2, and the park's South Gate is just across the road from the Forbidden City's north exit.</p>
@@ -119,6 +137,9 @@ HALF_DAY = Article(
     related=['forbidden-city/tickets-for-foreigners/', 'forbidden-city/entrance-and-exit/', 'forbidden-city/hall-of-supreme-harmony/', 'jingshan-park/best-view-of-the-forbidden-city/'],
     photos=['Views of the Forbidden City from Jingshan Park 1.jpg', 'Wumen.jpg', 'Hall of Supreme Harmony.JPG', 'Beijing China Forbidden-City-03.jpg', 'Beijing Forbidden City Hall of Central Harmony terraces-20071018-RM-143613.jpg', '保和殿 Baohe Hall - panoramio.jpg', 'Palace of Heavenly Purity (20220218132818).jpg', '交泰殿 Jiaotai Hall - panoramio.jpg', 'Palace of Earthly Tranquility (20220218133044).jpg', 'Imperial Garden (54448349292).jpg', 'Forbidden City Beijing Shenwumen Gate.JPG', 'Wanchun Pavilion, Jingshan Park, Beijing - November 2016 - 113.jpg'],
     video=FC_ROUTE_VIDEO,
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[DPM_VISIT, DPM_RULES],
     body='''
 <h2>How long do you need in the Forbidden City?</h2>
 <p>Half a day is enough: allow 3–4 hours, which covers the central axis from the Meridian Gate to the Gate of Divine Might (about 1 hour 40 minutes of walking and short stops before queues) plus one side area such as the Clock Gallery or the Treasure Gallery. A full day lets you add both galleries and the quieter western palaces.</p>
@@ -169,6 +190,9 @@ TICKETS = Article(
     image_alt='Hand-drawn illustration of the Meridian Gate, the entrance to the Forbidden City',
     about=FORBIDDEN_CITY,
     related=['forbidden-city/half-day-route/', 'forbidden-city/audio-guide-options/'],
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[DPM_RULES, DPM_VISIT, DPM_BOOKING],
     body='''
 <h2>How do foreigners book Forbidden City tickets?</h2>
 <p>Book online with your passport number: tickets go on sale at 20:00 Beijing time, seven days before the visit, cost ¥60 from April to October and ¥40 from November to March, and are not sold at the gate. Your passport is your ticket; you show it at the Meridian Gate.</p>
@@ -236,6 +260,8 @@ AUDIO = Article(
     image_alt='Hand-drawn illustration of the Imperial Garden in the Forbidden City',
     about=FORBIDDEN_CITY,
     related=['forbidden-city/half-day-route/', 'forbidden-city/tickets-for-foreigners/'],
+    published='2026-11-07',
+    sources=[DPM_GUIDES, DPM_VISIT],
     body='''
 <h2>What are the options for an English audio guide?</h2>
 <p>There are four: the museum's own rental audio guide, a human guide, a phone app, or a web-link guide bundled with some tickets. Most visitors are well served by either the official device or an offline app; a human guide is worth it if you want to ask questions.</p>
@@ -292,6 +318,9 @@ ENTRANCE = Article(
     image_alt='Hand-drawn illustration of the Gate of Divine Might, the north exit of the Forbidden City',
     about=FORBIDDEN_CITY,
     related=['forbidden-city/tickets-for-foreigners/', 'forbidden-city/half-day-route/', 'jingshan-park/best-view-of-the-forbidden-city/', 'beijing/chinese-address-cards/'],
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[DPM_VISIT, DPM_RULES],
     body='''
 <h2>Where is the entrance to the Forbidden City?</h2>
 <p>There is one visitor entrance, the Meridian Gate (<span lang="zh-Hans">午门</span>, Wumen) on the south side, and two exits: the Gate of Divine Might (<span lang="zh-Hans">神武门</span>) to the north, opposite Jingshan Park, and the East Glorious Gate (<span lang="zh-Hans">东华门</span>) to the east. The palace is about 960 metres from south to north, and you cannot come back in once you leave.</p>
@@ -340,6 +369,9 @@ HALL = Article(
     image_alt='Hand-drawn illustration of the Hall of Supreme Harmony on its marble terrace',
     about=FORBIDDEN_CITY,
     related=['forbidden-city/roof-guardians/', 'forbidden-city/half-day-route/', 'forbidden-city/audio-guide-options/'],
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[DPM_HALL, DPM_GATE, DPM_VISIT, DPM_RULES],
     body='''
 <h2>What is the Hall of Supreme Harmony?</h2>
 <p>It is the largest and most important hall in the Forbidden City, the throne hall where emperors were enthroned, married and received the court on great occasions. It stands on a three-tier white marble terrace about 8 metres high, and the present building dates from a rebuilding in 1695 under the Kangxi Emperor, after earlier halls burned. Plan 20–30 minutes here: most of what is worth seeing is outside.</p>
@@ -386,6 +418,9 @@ ROOF = Article(
     image_alt='Hand-drawn illustration of the line of guardian figures on a Forbidden City roof ridge',
     about=FORBIDDEN_CITY,
     related=['forbidden-city/hall-of-supreme-harmony/', 'forbidden-city/with-kids/', 'forbidden-city/half-day-route/'],
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[DPM_HALL],
     body='''
 <h2>What are the little figures on the roofs?</h2>
 <p>They are ceramic guardians set in a line along the sloping ridges at the corners of the roofs: a man riding a bird at the front, followed by up to ten mythical beasts. The Hall of Supreme Harmony is the only building with all ten; most halls have nine, seven or five, and smaller gates fewer. The number tells you how important the building was.</p>
@@ -437,6 +472,9 @@ WINTER = Article(
     image_alt='Hand-drawn illustration of the Hall of Preserving Harmony',
     about=FORBIDDEN_CITY,
     related=['forbidden-city/crowds-and-best-time/', 'forbidden-city/tickets-for-foreigners/', 'jingshan-park/best-view-of-the-forbidden-city/'],
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[DPM_VISIT, DPM_RULES, JS_PARK],
     body='''
 <h2>Is the Forbidden City worth visiting in winter?</h2>
 <p>Yes. From November to March tickets drop to ¥40 from ¥60, crowds are thinner outside Chinese New Year, and on the few days a year that it snows, the red walls and yellow roofs under white are the most photographed sight in Beijing. The trade-off is cold: daytime temperatures in January are often around or below freezing, and almost all of the visit is outdoors.</p>
@@ -486,6 +524,9 @@ KIDS = Article(
     image_alt='Hand-drawn illustration of a bronze tortoise from the Forbidden City',
     about=FORBIDDEN_CITY,
     related=['forbidden-city/roof-guardians/', 'forbidden-city/entrance-and-exit/', 'jingshan-park/best-view-of-the-forbidden-city/'],
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[DPM_VISIT, DPM_RULES],
     body='''
 <h2>Is the Forbidden City good for kids?</h2>
 <p>Yes, with a plan: keep it to 2–3 hours, give them things to find rather than things to read, and finish across the road in Jingshan Park, where they can climb a hill. The full walk from the entrance to the north exit is about 1 kilometre of courtyards and stone paving, plus steps up to every hall, so the youngest children will need carrying or a buggy for part of it.</p>
@@ -530,6 +571,9 @@ CROWDS = Article(
     image_alt='Hand-drawn illustration of the Hall of Central Harmony',
     about=FORBIDDEN_CITY,
     related=['forbidden-city/winter-and-snow/', 'forbidden-city/tickets-for-foreigners/', 'forbidden-city/half-day-route/'],
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[DPM_VISIT, DPM_RULES],
     body='''
 <h2>When is the Forbidden City most crowded?</h2>
 <p>During China's national holidays: Golden Week (1–7 October), the May Day holiday (around 1–5 May) and Chinese New Year (late January or February), plus the summer school holidays in July and August. On those days tickets are gone within minutes of release, seven days ahead. The quietest times are weekday mornings from March to April and from late October to mid-December, outside the holidays.</p>
@@ -584,6 +628,9 @@ SP_ROUTE = Article(
     image_alt='Hand-drawn illustration of the Tower of Buddhist Incense on Longevity Hill',
     about=SUMMER_PALACE,
     related=['summer-palace/long-corridor-paintings/', 'summer-palace/marble-boat/', 'beijing/visa-free-transit-2-day-plan/'],
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[SP_GOV, SP_SITE],
     body='''
 <h2>How long do you need at the Summer Palace?</h2>
 <p>Three to five hours. The classic route from the East Palace Gate along the Long Corridor to the Marble Boat, then round to the Seventeen-Arch Bridge, takes about 3 hours at an easy pace; a full day lets you add Suzhou Street and the back lake. The park covers about 3 square kilometres, three-quarters of it water, so most of the visit is walking along the shore.</p>
@@ -637,6 +684,9 @@ CORRIDOR = Article(
     image_alt='Hand-drawn illustration of the Long Corridor at the Summer Palace',
     about=SUMMER_PALACE,
     related=['summer-palace/one-day-route/', 'summer-palace/marble-boat/'],
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[SP_GOV],
     body='''
 <h2>What is the Long Corridor?</h2>
 <p>It is a covered walkway that runs 728 metres along the north shore of Kunming Lake, in 273 sections, from the Gate of Inviting the Moon in the east to the Marble Boat in the west. Every beam is painted, with pictures of landscapes, birds and flowers, and scenes from Chinese novels, legends and history. Walking it end to end takes 15–20 minutes; looking at the paintings can take as long as you like.</p>
@@ -684,6 +734,9 @@ MARBLE = Article(
     image_alt='Hand-drawn illustration of the Marble Boat at the Summer Palace',
     about=SUMMER_PALACE,
     related=['summer-palace/long-corridor-paintings/', 'summer-palace/one-day-route/'],
+    published='2026-11-07',
+    checked='2026-11-09',
+    sources=[SP_GOV, SP_SITE],
     body='''
 <h2>What is the Marble Boat?</h2>
 <p>It is a waterside pavilion in the shape of a boat, at the west end of the Long Corridor: a stone hull completed in 1755, with a two-storey cabin on top that was rebuilt in a Western style in 1893. It has never moved. Its Chinese name, Qingyan Fang (<span lang="zh-Hans">清晏舫</span>), means "boat of clear and peaceful seas".</p>
@@ -728,6 +781,8 @@ VISA_FREE = Article(
     related=['forbidden-city/tickets-for-foreigners/', 'summer-palace/one-day-route/', 'beijing/without-google/'],
     checked='2026-11-09',
     city='beijing',
+    published='2026-11-07',
+    sources=[NIA_TRANSIT, DPM_VISIT, DPM_RULES],
     body='''
 <h2>Can I see Beijing in 2 days on visa-free transit?</h2>
 <p>Yes. Under China's 240-hour visa-free transit policy, travellers from 57 countries flying on to a third country can stay up to 10 days without a visa if they arrive through one of the 65 listed ports; check that your airport is on the official list. Two full days cover the essentials: the Forbidden City and Jingshan Park on day 1, the Great Wall and the Summer Palace on day 2. Book the Forbidden City before you fly, because tickets open seven days ahead and sell out.</p>
@@ -1008,7 +1063,7 @@ THREE_DAYS = Article(
 
 <h2>Day 3: the Temple of Heaven and the Summer Palace</h2>
 <ul>
-  <li><strong>Early morning</strong> The Temple of Heaven park opens at 06:00 (06:30 from November to March), and in the early morning it is full of locals doing tai chi, dancing and playing cards. The halls open at 08:00: the Hall of Prayer for Good Harvests, the Echo Wall and the Circular Mound Altar. Buy the combined ticket (¥34, or ¥28 from November to March) to see them. Metro: Line 5 to Tiantandongmen, Exit A.</li>
+  <li><strong>Early morning</strong> The <a href="@ROOT@beijing/temple-of-heaven/">Temple of Heaven</a> park opens at 06:00 (06:30 from November to March), and in the early morning it is full of locals doing tai chi, dancing and playing cards. The halls open at 08:00: the Hall of Prayer for Good Harvests, the Echo Wall and the Circular Mound Altar. Buy the combined ticket (¥34, or ¥28 from November to March) to see them. Metro: Line 5 to Tiantandongmen, Exit A.</li>
   <li><strong>Afternoon</strong> Cross the city to the <a href="@ROOT@summer-palace/one-day-route/">Summer Palace</a> in the northwest. Walk the Long Corridor along Kunming Lake to the Marble Boat, and climb to the Tower of Buddhist Incense if you have the energy.</li>
   <li><strong>Evening</strong> Back to the centre for dinner.</li>
 </ul>
@@ -1023,7 +1078,161 @@ THREE_DAYS = Article(
 <p>The metro covers every stop on this plan except the Great Wall, and is signed in English. Taxis and DiDi are cheap for short hops; carry each place's name in Chinese. See <a href="@ROOT@beijing/without-google/">Beijing without Google</a> for payments and apps, and <a href="@ROOT@beijing/chinese-address-cards/">address cards</a> to show drivers.</p>
 ''')
 
-ARTICLES = [GREAT_WALL, THREE_DAYS, JINGSHAN_VIEW, HALF_DAY, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
+AIRPORT = Article(
+    path='beijing/airport-to-city/',
+    short='Airport to the city',
+    title='Beijing airport to the city: trains, taxis and buses',
+    description='Getting from Beijing Capital (PEK) or Daxing (PKX) airport to the city: airport express fares and hours, taxi ranks and fares, and airport buses.',
+    eyebrow='Arriving',
+    h1='How do I get from Beijing airport to the city centre?',
+    image=None,
+    image_alt='',
+    about=BEIJING,
+    related=['beijing/without-google/', 'beijing/chinese-address-cards/', 'beijing/3-day-itinerary/'],
+    city='beijing',
+    checked='2026-11-09',
+    sources=[('Beijing Capital International Airport: getting to and from the airport', 'https://www.bcia.com.cn/wljc.html'),
+             ('Beijing Daxing International Airport: Daxing Airport Express', 'https://www.bdia.com.cn/#/airportExpress')],
+    body='''
+<h2>What is the easiest way into the city?</h2>
+<p>The airport express train. From Capital Airport (PEK), the Capital Airport Express runs from Terminals 3 and 2 to Sanyuanqiao, Dongzhimen and Beixinqiao for a flat ¥25, about every 10 minutes. From Daxing Airport (PKX), the Daxing Airport Express runs to Caoqiao in the south of the city for ¥35. Both end at metro stations where you can change lines. With heavy bags, or after the last train, take a taxi from the official taxi rank.</p>
+
+<h2>Which airport am I landing at?</h2>
+<p>Check the airport code on your ticket. <strong>PEK</strong> is Beijing Capital International Airport, northeast of the centre, with Terminals 2 and 3. <strong>PKX</strong> is Beijing Daxing International Airport, far to the south. They are different airports with different trains, so make sure you plan for the right one.</p>
+
+<h2>How do the two airport trains compare?</h2>
+<div class="table-scroll">
+<table>
+  <thead><tr><th></th><th>Capital Airport Express (PEK)</th><th>Daxing Airport Express (PKX)</th></tr></thead>
+  <tbody>
+    <tr><td>Fare</td><td>¥25, any distance</td><td>¥35 to Caoqiao; ¥25 to Daxing Xincheng; business carriage ¥50</td></tr>
+    <tr><td>Where to board</td><td>T3: parking building, level 2. T2: parking building, level B2</td><td>Terminal, level B1</td></tr>
+    <tr><td>Hours from the airport</td><td>T3 06:22–22:52; T2 06:36–23:10</td><td>06:00–23:00, Sundays to 23:30</td></tr>
+    <tr><td>How often</td><td>About every 10 minutes</td><td>At most every 9 min 20 s until 22:30, then every 15 minutes</td></tr>
+    <tr><td>Change to the metro at</td><td>Sanyuanqiao (Lines 10, 12), Dongzhimen (Lines 2, 13), Beixinqiao (Line 5)</td><td>Caoqiao (Lines 10, 19)</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Fares and times are the airports' own figures when we checked. On the Daxing line, ticket sales stop five minutes before the last train, and the airport suggests being at the station ten minutes before it.</p>
+
+<h2>Capital Airport (PEK): what else should I know?</h2>
+<ul>
+  <li><strong>Stations</strong> The line has five: Beixinqiao, Dongzhimen, Sanyuanqiao, Terminal 3 and Terminal 2. Going back to the airport, the first trains leave Beixinqiao at 05:56 and Dongzhimen at 06:00; the last leave at 22:26 and 22:30.</li>
+  <li><strong>Taxis</strong> T3: the taxi area on level B1. T2: level 1, the middle lane outside doors 5 to 9. Use the official rank only.</li>
+  <li><strong>Ride-hailing</strong> Pick-ups are in the parking buildings: for T3, parking building 3, level B2, zone H; for T2, parking building 2, level 1, south-east side.</li>
+  <li><strong>Airport buses</strong> A 24-hour bus runs to Beijing West Railway Station, ¥25–30 depending on the stop, and another goes to Beijing South Railway Station, ¥20–30. Buses leave from outside door 1 on level 1 of T3 and door 11 on level 1 of T2.</li>
+</ul>
+
+<h2>How much is a taxi from Capital Airport?</h2>
+<p>Taxis use the meter. The airport gives these main rules as a guide:</p>
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Item</th><th>Charge</th></tr></thead>
+  <tbody>
+    <tr><td>First 3 km</td><td>¥13</td></tr>
+    <tr><td>Each further km</td><td>¥2.30, plus 50% for every km beyond 15 km</td></tr>
+    <tr><td>Fuel surcharge</td><td>¥1 a trip</td></tr>
+    <tr><td>23:00–05:00</td><td>Per-km rate plus 20%</td></tr>
+    <tr><td>Road and bridge tolls</td><td>Paid by the passenger</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Ask the driver for a receipt (<span lang="zh-Hans">发票</span>, fāpiào) and note the plate number in case you leave something behind. Have your hotel's address in Chinese ready to show; see <a href="@ROOT@beijing/chinese-address-cards/">address cards</a>.</p>
+
+<h2>Daxing Airport (PKX): what else should I know?</h2>
+<ul>
+  <li><strong>Into town</strong> The express stops at Daxing Xincheng, then Caoqiao, where you change to metro Lines 10 or 19.</li>
+  <li><strong>Children</strong> Children 1.3 m tall or under ride free with a paying adult.</li>
+  <li><strong>Air–rail tickets</strong> China Southern, China Eastern, Air China and Xiamen Airlines offer discounted express tickets to some passengers flying from or to Daxing. The rules vary; check with your airline.</li>
+  <li><strong>Flying out</strong> At Caoqiao you can check in, drop your bags and have them screened before you ride to the airport.</li>
+</ul>
+
+<h2>How do I get to the Forbidden City from the airport?</h2>
+<p>Take the airport express to the metro, then the metro to Tiananmen East or Tiananmen West on Line 1, the stations the museum lists for the Meridian Gate, where visitors enter. Palace tickets go on sale online at 20:00 Beijing time seven days ahead and are never sold on the day, so book before you fly: see <a href="@ROOT@forbidden-city/tickets-for-foreigners/">how to book with a passport</a> and <a href="@ROOT@forbidden-city/entrance-and-exit/">the entrance and exits</a>.</p>
+
+<h2>What should I sort out before I land?</h2>
+<p>A way to pay on your phone and a way to get online. Set up Alipay or WeChat Pay with your card before you fly; see <a href="@ROOT@beijing/without-google/">Beijing without Google</a>.</p>
+''')
+
+TEMPLE_OF_HEAVEN = Article(
+    path='beijing/temple-of-heaven/',
+    short='Temple of Heaven',
+    title='Temple of Heaven, Beijing: tickets, hours and booking',
+    description='Temple of Heaven tickets (¥15, or ¥34 combined), opening hours, Monday closures and how foreign visitors book with a passport, from official sources.',
+    eyebrow='Temple of Heaven',
+    h1='Temple of Heaven: tickets, hours and how to visit',
+    image=None,
+    image_alt='',
+    about={'@type': 'TouristAttraction', 'name': 'Temple of Heaven', 'alternateName': '天坛', 'containedInPlace': {'@type': 'City', 'name': 'Beijing'}},
+    related=['beijing/3-day-itinerary/', 'beijing/great-wall-which-section/', 'beijing/chinese-address-cards/'],
+    city='beijing',
+    cta=False,
+    checked='2026-11-09',
+    sources=[('Beijing Municipal Government: Temple of Heaven', 'https://english.beijing.gov.cn/specials/parktours/guidevisitors/templeofheaven/'),
+             ('Beijing Municipal Government: Temple of Heaven tickets and booking', 'https://english.beijing.gov.cn/specials/ticketing/parks/202407/t20240719_3753312.html'),
+             ('Visit Beijing (Beijing Municipal Bureau of Culture and Tourism): Temple of Heaven gates', 'https://www.visitbeijing.com.cn/article/47QrLHhZIb5')],
+    body='''
+<h2>Do I need to book the Temple of Heaven?</h2>
+<p>Book ahead if you can. Tickets are sold by real-name booking 1–7 days in advance, and foreign visitors book on the "Temple of Heaven" WeChat account with their passport. Get the combined ticket, ¥34 from April to October or ¥28 from November to March, to go into the Hall of Prayer for Good Harvests, the Echo Wall and the Circular Mound Altar. These sights close on Mondays, except on public holidays, while the park itself is open every day.</p>
+
+<h2>How much are the tickets?</h2>
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Ticket</th><th>1 April – 31 October</th><th>1 November – 31 March</th></tr></thead>
+  <tbody>
+    <tr><td>Park admission</td><td>¥15</td><td>¥10</td></tr>
+    <tr><td>Combined ticket</td><td>¥34</td><td>¥28</td></tr>
+    <tr><td>Hall of Prayer for Good Harvests, Echo Wall and Circular Mound Altar</td><td colspan="2">¥20</td></tr>
+    <tr><td>Divine Music Administration</td><td colspan="2">¥10</td></tr>
+  </tbody>
+</table>
+</div>
+<p>Each ticket also comes as a half-price discount ticket; check whether you qualify when you book. Prices are the official adult prices when we checked.</p>
+
+<h2>What are the opening hours?</h2>
+<div class="table-scroll">
+<table>
+  <thead><tr><th></th><th>1 April – 31 October</th><th>1 November – 31 March</th></tr></thead>
+  <tbody>
+    <tr><td>Park</td><td>06:00–22:00, last entry 21:00</td><td>06:30–22:00, last entry 21:00</td></tr>
+    <tr><td>Ticketed sights</td><td>08:00–18:00, last entry 17:30</td><td>08:00–17:00, last entry 16:30</td></tr>
+  </tbody>
+</table>
+</div>
+<p>The ticketed sights are the Hall of Prayer for Good Harvests, the Echo Wall, the Circular Mound Altar, the Fasting Palace, the Divine Kitchen, the Animal Sacrifice Pavilion and the Divine Music Administration. All of them close on Mondays, except on public holidays.</p>
+
+<h2>How do foreign visitors book?</h2>
+<ul>
+  <li>Book on the "Temple of Heaven" WeChat account with your passport, 1–7 days ahead, for a time slot. The e-ticket is valid only on the day you booked.</li>
+  <li>At the gate, show the e-ticket QR code and the passport you booked with. Save a screenshot of the QR code before you go.</li>
+  <li>If the main sights have not sold out, you can buy same-day tickets for them by scanning the QR code at the entrance, and the service counters in the park can also book for you.</li>
+  <li>Unused tickets can be refunded free of charge within 7 days of the visit date, on the platform you booked through. Used tickets cannot be refunded.</li>
+</ul>
+<p>No WeChat yet? See <a href="@ROOT@beijing/without-google/">Beijing without Google</a> for setting it up before you travel.</p>
+
+<h2>What is there to see?</h2>
+<p>The Temple of Heaven is where the Ming and Qing emperors offered sacrifices to heaven and prayed for good harvests. The park covers 273 hectares inside a double wall. Its northern end is rounded and its southern end square, after the old belief that heaven is round and the earth square.</p>
+<ul>
+  <li><strong>Hall of Prayer for Good Harvests</strong> The temple's best-known building, built in 1420, 38.2 m high and 24.2 m across.</li>
+  <li><strong>Imperial Vault of Heaven and the Echo Wall</strong> The hall and side halls that kept the tablets used at the sacrifices, in a courtyard ringed by a circular wall known as the Echo Wall.</li>
+  <li><strong>Circular Mound Altar</strong> The open stone altar where the emperor made the sacrifice to heaven at the winter solstice. Its slabs, balustrades and steps come in nines or multiples of nine, the number of heaven.</li>
+</ul>
+
+<h2>Which way round should I walk?</h2>
+<p>The park suggests a route for each season. In winter: in at the East Gate, along the Long Corridor to the Hall of Prayer for Good Harvests, then the Fasting Palace, the Divine Music Administration, the Imperial Vault of Heaven and the Echo Wall, and out at the South Gate. In spring and summer it starts from the West Gate instead. Allow two to three hours.</p>
+
+<h2>How do I get there?</h2>
+<ul>
+  <li><strong>East Gate</strong> Metro Line 5 to Tiantandongmen, Exit A.</li>
+  <li><strong>West Gate</strong> Metro Line 8 to Tianqiao, Exit C.</li>
+  <li><strong>By taxi</strong> Show the driver <span lang="zh-Hans">天坛公园</span> (Tiāntán Gōngyuán) and the gate you want: <span lang="zh-Hans">东门</span> (east gate) or <span lang="zh-Hans">西门</span> (west gate).</li>
+</ul>
+
+<h2>When is the best time to go?</h2>
+<p>Early. The park opens at 06:00 (06:30 from November to March), two hours before the halls, so you can walk the grounds while they are full of local people exercising, then be at the Hall of Prayer for Good Harvests when it opens at 08:00. Avoid Mondays unless you only want the park. It pairs well with an afternoon at the Summer Palace; see <a href="@ROOT@beijing/3-day-itinerary/">Beijing in 3 days</a>.</p>
+''')
+
+ARTICLES = [GREAT_WALL, THREE_DAYS, AIRPORT, TEMPLE_OF_HEAVEN, JINGSHAN_VIEW, HALF_DAY, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
             SP_ROUTE, CORRIDOR, MARBLE, VISA_FREE, NO_GOOGLE, ADDRESS]
 
 
