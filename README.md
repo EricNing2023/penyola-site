@@ -35,6 +35,9 @@ This repository replaces the output of `penyola-release/tools/build_site.py`
 Fonts: Manrope, SIL Open Font License 1.1 (`assets/fonts/OFL.txt`).
 
 `RELEASED = True` in `build.py` (live since 2026-11-06): the badges link to the App Store and pages carry the Smart App Banner.
+`robots.txt` must stay open to every crawler, AI crawlers included (GPTBot, Google-Extended, CCBot and the rest), for pages and images
+(user's decision, 2026-11-10). penyola.com is DNS-only at Cloudflare, so Cloudflare's bot blocking does not apply; keep it that way.
+Map images carry a visible "© Penyola · penyola.com" credit, repeated as text under the map.
 The build also writes `robots.txt`, `sitemap.xml` and the IndexNow key file; after a push run
 `python3 ../penyola-release/tools/ping_indexnow.py`.
 
