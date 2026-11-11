@@ -392,3 +392,4 @@ mark.chk { background: #fff1a8; color: inherit; padding: 0 2px; border-radius: 3
 .big-map figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; text-align: center; }
 .spots { padding-left: 1.6em; }
 .spots li { margin-bottom: 6px; }
+.big-map .map-credit { color: var(--ink); font-weight: 600; }

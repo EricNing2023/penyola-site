@@ -1253,7 +1253,7 @@ FC_MAP = Article(
                'description': 'Hand-drawn map of the Forbidden City in Beijing with the Classic route (about 1 h 35 min, 1.8 km) and the Full route (about 4 h, 4.6 km), the Meridian Gate entrance, the Gate of Divine Might and East Glorious Gate exits, and 21 numbered spots.',
                'contentUrl': 'https://penyola.com/assets/img/fc-map-full.jpg', 'thumbnailUrl': 'https://penyola.com/assets/img/fc-map.webp',
                'width': 3000, 'height': 9000, 'encodingFormat': 'image/jpeg',
-               'creditText': 'Map © Penyola; map data © OpenStreetMap contributors', 'copyrightNotice': '© Penyola',
+               'creditText': '© Penyola · penyola.com; map data © OpenStreetMap contributors', 'copyrightNotice': '© Penyola',
                'creator': {'@type': 'Organization', 'name': 'Penyola', 'url': 'https://penyola.com/'},
                'acquireLicensePage': 'https://penyola.com/credits.html',
                'contentLocation': FORBIDDEN_CITY}],
@@ -1261,7 +1261,7 @@ FC_MAP = Article(
 <p>This is the whole Forbidden City on one hand-drawn map. It shows two walking routes, the way in and the two ways out, and 21 numbered spots. Tap the map to open the full-size version, then zoom in on your phone.</p>
 <figure class="big-map">
   <a href="@ROOT@assets/img/fc-map-full.jpg"><img src="@ROOT@assets/img/fc-map.webp" alt="Hand-drawn map of the Forbidden City with the Classic route in red, the Full route in dark green and 21 numbered spots" width="1200" height="3600"></a>
-  <figcaption>Map © Penyola · map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> · <a href="@ROOT@assets/img/fc-map-full.jpg">Full size (3000 × 9000 px, 3.2 MB)</a></figcaption>
+  <figcaption><span class="map-credit">© Penyola · <a href="https://penyola.com/">penyola.com</a></span><br>Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> · <a href="@ROOT@assets/img/fc-map-full.jpg">Full size (3000 × 9000 px, 3.2 MB)</a></figcaption>
 </figure>
 
 <h2>Which route should I take?</h2>
