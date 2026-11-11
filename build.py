@@ -656,13 +656,13 @@ def article_page(a):
 </article>
 '''
     data = {'@context': 'https://schema.org', '@type': 'Article', 'headline': a.h1, 'description': a.description,
-            'image': BASE + 'assets/img/' + (a.image or 'og.jpg'), 'datePublished': a.published or a.checked, 'dateModified': a.checked,
+            'image': BASE + 'assets/img/' + (a.og_image or a.image or 'og.jpg'), 'datePublished': a.published or a.checked, 'dateModified': a.checked,
             'author': {'@type': 'Organization', 'name': 'Penyola', 'url': BASE},
             'publisher': {'@type': 'Organization', 'name': 'Penyola', 'url': BASE, 'logo': {'@type': 'ImageObject', 'url': BASE + 'assets/img/icon-256.png'}},
             'mainEntityOfPage': BASE + a.path, 'about': a.about}
     head = f'\n<script type="application/ld+json">{json.dumps(data, ensure_ascii=False)}</script>'
-    if video:
-        head += f'\n<script type="application/ld+json">{json.dumps(video, ensure_ascii=False)}</script>'
+    for extra in ([video] if video else []) + a.extra_ld:
+        head += f'\n<script type="application/ld+json">{json.dumps(extra, ensure_ascii=False)}</script>'
     return main, head
 
 
@@ -689,7 +689,7 @@ pages['press/index.html'] = ('Press kit – Penyola', 'Penyola press kit: one-li
 heads, images = {}, {}
 for a in ARTICLES:
     main, heads[a.path + 'index.html'] = article_page(a)
-    images[a.path + 'index.html'] = 'assets/img/' + (a.image or 'og.jpg')
+    images[a.path + 'index.html'] = 'assets/img/' + (a.og_image or a.image or 'og.jpg')
     pages[a.path + 'index.html'] = (a.title, a.description, main, 'guide-doc')
 for city, hub in CITY_HUBS.items():
     main, heads[f'{city}/first-time/index.html'] = hub_page(city, hub)

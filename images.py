@@ -163,6 +163,18 @@ PRESS_SHOTS = {'press-screen-map': '01.png', 'press-screen-story': '03.png', 'pr
 SHOT_W = 400
 
 
+# The whole Forbidden City map (Pinterest artwork, approved): a web copy for the page and the full-size original
+# behind a link, both watermarked only. Source stays in penyola-artifacts.
+FC_MAP = AI / 'penyola-artifacts/marketing/pinterest/images/map-fc-whole-3000.jpg'
+FC_MAP_WEB_W = 1200
+
+
+def fc_map(tm):
+    im = Image.open(FC_MAP).convert('RGB')
+    save(im.resize((FC_MAP_WEB_W, round(im.height * FC_MAP_WEB_W / im.width)), Image.LANCZOS), IMG / 'fc-map.webp', tm, quality=82)
+    save(im, IMG / 'fc-map-full.jpg', tm, quality=85)
+
+
 def page_images(tm):
     for name, src in PAGE_ART.items():
         im = Image.open(src)
@@ -181,7 +193,11 @@ def main():
             text, found, _ = tm.decode(Image.open(f).convert('RGB'), MODE='text')
             print(f, 'PENYOLA watermark found' if found and text == MARK else 'no watermark found')
         return
+    if sys.argv[1:2] == ['--map']:  # only the Forbidden City map
+        fc_map(tm)
+        return
     page_images(tm)
+    fc_map(tm)
     if sys.argv[1:2] == ['--pages']:  # only the guide and press images, leaving the others untouched
         return
     data = map_cards(tm)

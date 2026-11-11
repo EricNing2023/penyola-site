@@ -385,3 +385,10 @@ mark.chk { background: #fff1a8; color: inherit; padding: 0 2px; border-radius: 3
 .sources { margin-top: 40px; font-size: 14px; color: var(--muted); }
 .sources h2 { font-size: 18px; }
 .sources li { overflow-wrap: anywhere; }
+
+/* Full-page map on /forbidden-city/map/ */
+.big-map { margin: 24px auto; max-width: 600px; }
+.big-map img { width: 100%; height: auto; border-radius: 12px; display: block; }
+.big-map figcaption { font-size: 14px; color: var(--muted); margin-top: 8px; text-align: center; }
+.spots { padding-left: 1.6em; }
+.spots li { margin-bottom: 6px; }

@@ -33,6 +33,8 @@ class Article:
     sources: list = field(default_factory=list)  # (label, official URL), listed at the end of the page
     city: str = None  # part of that city's "first time" series (CITY_HUBS), e.g. 'beijing'
     cta: bool = True  # False on pages about sights the app does not cover yet
+    og_image: str = None  # share image under assets/img/ when it is not the illustration
+    extra_ld: list = field(default_factory=list)  # more schema.org objects, e.g. an ImageObject
 
 
 # Official pages behind the facts on the older guides (listed under "Sources" on each page).
@@ -134,7 +136,7 @@ HALF_DAY = Article(
     image='page-palace-of-heavenly-purity.webp',
     image_alt='Hand-drawn illustration of the Palace of Heavenly Purity',
     about=FORBIDDEN_CITY,
-    related=['forbidden-city/tickets-for-foreigners/', 'forbidden-city/entrance-and-exit/', 'forbidden-city/hall-of-supreme-harmony/', 'jingshan-park/best-view-of-the-forbidden-city/'],
+    related=['forbidden-city/map/', 'forbidden-city/tickets-for-foreigners/', 'forbidden-city/entrance-and-exit/', 'forbidden-city/hall-of-supreme-harmony/', 'jingshan-park/best-view-of-the-forbidden-city/'],
     photos=['Views of the Forbidden City from Jingshan Park 1.jpg', 'Wumen.jpg', 'Hall of Supreme Harmony.JPG', 'Beijing China Forbidden-City-03.jpg', 'Beijing Forbidden City Hall of Central Harmony terraces-20071018-RM-143613.jpg', '保和殿 Baohe Hall - panoramio.jpg', 'Palace of Heavenly Purity (20220218132818).jpg', '交泰殿 Jiaotai Hall - panoramio.jpg', 'Palace of Earthly Tranquility (20220218133044).jpg', 'Imperial Garden (54448349292).jpg', 'Forbidden City Beijing Shenwumen Gate.JPG', 'Wanchun Pavilion, Jingshan Park, Beijing - November 2016 - 113.jpg'],
     video=FC_ROUTE_VIDEO,
     published='2026-11-07',
@@ -143,7 +145,7 @@ HALF_DAY = Article(
     body='''
 <h2>How long do you need in the Forbidden City?</h2>
 <p>Half a day is enough: allow 3–4 hours, which covers the central axis from the Meridian Gate to the Gate of Divine Might (about 1 hour 40 minutes of walking and short stops before queues) plus one side area such as the Clock Gallery or the Treasure Gallery. A full day lets you add both galleries and the quieter western palaces.</p>
-<p>The palace is one-way: you enter from the south through the Meridian Gate and leave from the north or east. Plan the route as a single walk north, with side trips to the east or west on the way.</p>
+<p>The palace is one-way: you enter from the south through the Meridian Gate and leave from the north or east. Plan the route as a single walk north, with side trips to the east or west on the way. The <a href="@ROOT@forbidden-city/map/">Forbidden City map</a> shows both routes and 21 spots on one page.</p>
 
 <h2>What should I do before I go?</h2>
 <ul>
@@ -1232,7 +1234,88 @@ TEMPLE_OF_HEAVEN = Article(
 <p>Early. The park opens at 06:00 (06:30 from November to March), two hours before the halls, so you can walk the grounds while they are full of local people exercising, then be at the Hall of Prayer for Good Harvests when it opens at 08:00. Avoid Mondays unless you only want the park. It pairs well with an afternoon at the Summer Palace; see <a href="@ROOT@beijing/3-day-itinerary/">Beijing in 3 days</a>.</p>
 ''')
 
-ARTICLES = [GREAT_WALL, THREE_DAYS, AIRPORT, TEMPLE_OF_HEAVEN, JINGSHAN_VIEW, HALF_DAY, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
+FC_MAP = Article(
+    path='forbidden-city/map/',
+    short='Forbidden City map',
+    title='Forbidden City Map: Both Routes and 21 Spots (Hand-Drawn)',
+    description='A hand-drawn map of the whole Forbidden City with two walking routes, the entrance and both exits, and 21 numbered spots, each with a line on what to look for.',
+    eyebrow='Forbidden City · map',
+    h1='Forbidden City map: two routes and 21 spots',
+    image=None,
+    image_alt='',
+    about=FORBIDDEN_CITY,
+    related=['forbidden-city/half-day-route/', 'forbidden-city/entrance-and-exit/', 'forbidden-city/tickets-for-foreigners/', 'jingshan-park/best-view-of-the-forbidden-city/'],
+    checked='2026-11-10',
+    og_image='fc-map.webp',
+    sources=[('Palace Museum: opening hours, tickets and exits', 'https://www.dpm.org.cn/Visit.html'),
+             ('Palace Museum: Hall of Military Prowess closed from 19 October 2026', 'https://www.dpm.org.cn/announce_detail/379651.html')],
+    extra_ld=[{'@context': 'https://schema.org', '@type': 'ImageObject', 'name': 'Forbidden City map: two routes and 21 spots',
+               'description': 'Hand-drawn map of the Forbidden City in Beijing with the Classic route (about 1 h 35 min, 1.8 km) and the Full route (about 4 h, 4.6 km), the Meridian Gate entrance, the Gate of Divine Might and East Glorious Gate exits, and 21 numbered spots.',
+               'contentUrl': 'https://penyola.com/assets/img/fc-map-full.jpg', 'thumbnailUrl': 'https://penyola.com/assets/img/fc-map.webp',
+               'width': 3000, 'height': 9000, 'encodingFormat': 'image/jpeg',
+               'creditText': 'Map © Penyola; map data © OpenStreetMap contributors', 'copyrightNotice': '© Penyola',
+               'creator': {'@type': 'Organization', 'name': 'Penyola', 'url': 'https://penyola.com/'},
+               'acquireLicensePage': 'https://penyola.com/credits.html',
+               'contentLocation': FORBIDDEN_CITY}],
+    body='''
+<p>This is the whole Forbidden City on one hand-drawn map. It shows two walking routes, the way in and the two ways out, and 21 numbered spots. Tap the map to open the full-size version, then zoom in on your phone.</p>
+<figure class="big-map">
+  <a href="@ROOT@assets/img/fc-map-full.jpg"><img src="@ROOT@assets/img/fc-map.webp" alt="Hand-drawn map of the Forbidden City with the Classic route in red, the Full route in dark green and 21 numbered spots" width="1200" height="3600"></a>
+  <figcaption>Map © Penyola · map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> · <a href="@ROOT@assets/img/fc-map-full.jpg">Full size (3000 × 9000 px, 3.2 MB)</a></figcaption>
+</figure>
+
+<h2>Which route should I take?</h2>
+<p><strong>The Classic route</strong> (red) walks straight up the middle: about 1 hour 35 minutes and 1.8 km. It takes in spots 1 to 4 and 7 to 11, from the bronze lions to the Imperial Garden, and leaves by the Gate of Divine Might. Take this one if you have a morning, or if it is your first visit.</p>
+<p><strong>The Full route</strong> (dark green) is about 4 hours and 4.6 km. It follows the same line through the big halls, then loops through the western palaces where later emperors lived and the eastern palaces with their courtyards, and heads for the Treasure Gallery in the northeast. The Clock and Watch Gallery and the Treasure Gallery each need their own small ticket on top of entry.</p>
+<p>Both times are walking at an easy pace plus about 10 minutes at each stop. Queues, crowds and the extra galleries add more. For the stop-by-stop version of the shorter walk, see <a href="@ROOT@forbidden-city/half-day-route/">the Forbidden City in half a day</a>.</p>
+
+<h2>Where do I go in and out?</h2>
+<ul>
+  <li><strong>In:</strong> everyone enters at the Meridian Gate, at the south end. See <a href="@ROOT@forbidden-city/entrance-and-exit/">how to get to it</a>.</li>
+  <li><strong>Out:</strong> the Gate of Divine Might at the north end, across the road from <a href="@ROOT@jingshan-park/best-view-of-the-forbidden-city/">Jingshan Park</a>, or the East Glorious Gate on the east side, about 800 m from Wangfujing.</li>
+  <li>The palace is closed on Mondays, except public holidays. Tickets are booked online in your own name, and your passport is your ticket. See <a href="@ROOT@forbidden-city/tickets-for-foreigners/">how to book</a>.</li>
+</ul>
+
+<h2>What are the 21 spots?</h2>
+<h3>Outer court</h3>
+<ol class="spots" start="1">
+  <li><strong>Bronze lions.</strong> One has a paw on a ball, the other a cub.</li>
+  <li><strong>Hall of Supreme Harmony.</strong> Ten roof beasts, a sundial and bronze tortoises out front.</li>
+  <li><strong>Hall of Central Harmony.</strong> Where the emperor got ready for big ceremonies.</li>
+  <li><strong>Hall of Preserving Harmony.</strong> The largest carved stone ramp is round the back.</li>
+  <li><strong>Hall of Military Prowess.</strong> Famous for the books printed here. Closed since 19 October 2026 for repairs.</li>
+  <li><strong>Hall of Literary Glory.</strong> Scholars lectured the emperor here.</li>
+</ol>
+<h3>Inner court and garden</h3>
+<ol class="spots" start="7">
+  <li><strong>Gate of Heavenly Purity.</strong> Gilded lions mark the way into the inner palace.</li>
+  <li><strong>Palace of Heavenly Purity.</strong> The heir's name was sealed behind the plaque.</li>
+  <li><strong>Hall of Union.</strong> 25 imperial seals and two clocks.</li>
+  <li><strong>Palace of Earthly Tranquility.</strong> Ming empresses lived here.</li>
+  <li><strong>Imperial Garden.</strong> Pebble paths and two cypresses grown together.</li>
+</ol>
+<h3>West side</h3>
+<ol class="spots" start="12">
+  <li><strong>Hall of Mental Cultivation.</strong> Where later emperors lived and worked.</li>
+  <li><strong>Palace of Gathered Elegance.</strong> Bronze dragons and deer in the courtyard.</li>
+  <li><strong>Palace of Earthly Honor.</strong> Look for the little swing rings.</li>
+  <li><strong>Palace of Compassion and Tranquility.</strong> Where empress dowagers lived.</li>
+</ol>
+<h3>East side</h3>
+<ol class="spots" start="16">
+  <li><strong>Palace of Celestial Favor.</strong> Pear blossom in spring.</li>
+  <li><strong>Palace of Accumulated Purity.</strong> Magnolias in the courtyard.</li>
+  <li><strong>Lingzhaoxuan.</strong> An unfinished building nicknamed the Crystal Palace.</li>
+  <li><strong>Clock and Watch Gallery.</strong> Imperial clocks. Its own small ticket.</li>
+  <li><strong>Nine-Dragon Screen.</strong> Nine dragons in glazed tile.</li>
+  <li><strong>Treasure Gallery.</strong> Its own ticket. Old pines inside.</li>
+</ol>
+
+<h2>Can I print it or save it?</h2>
+<p>Yes, for your own trip: save the full-size image to your phone before you go, since mobile data can be slow inside the palace. Please link to this page rather than re-posting the map elsewhere.</p>
+''')
+
+ARTICLES = [GREAT_WALL, THREE_DAYS, AIRPORT, TEMPLE_OF_HEAVEN, JINGSHAN_VIEW, HALF_DAY, FC_MAP, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
             SP_ROUTE, CORRIDOR, MARBLE, VISA_FREE, NO_GOOGLE, ADDRESS]
 
 
@@ -1258,7 +1341,7 @@ CITY_HUBS = {
             ('Before you fly', ['beijing/before-you-land/', 'beijing/visa-free-entry/', 'beijing/without-google/']),
             ('Arriving and getting around', ['beijing/airport-to-city/', 'beijing/getting-around/', 'beijing/chinese-address-cards/']),
             ('Plan your days', ['beijing/visa-free-transit-2-day-plan/', 'beijing/3-day-itinerary/', 'beijing/4-day-itinerary/']),
-            ('The big sights', ['forbidden-city/tickets-for-foreigners/', 'forbidden-city/half-day-route/', 'beijing/great-wall-which-section/',
+            ('The big sights', ['forbidden-city/tickets-for-foreigners/', 'forbidden-city/half-day-route/', 'forbidden-city/map/', 'beijing/great-wall-which-section/',
                                 'summer-palace/one-day-route/', 'beijing/temple-of-heaven/', 'jingshan-park/best-view-of-the-forbidden-city/', 'beijing/hutongs/']),
             ('Timing and pitfalls', ['beijing/best-time-to-visit/', 'forbidden-city/crowds-and-best-time/', 'beijing/common-mistakes/']),
         ],
