@@ -1299,7 +1299,7 @@ FC_MAP = Article(
   <li><strong>Hall of Mental Cultivation.</strong> Where later emperors lived and worked.</li>
   <li><strong>Palace of Gathered Elegance.</strong> Bronze dragons and deer in the courtyard.</li>
   <li><strong>Palace of Earthly Honor.</strong> Look for the little swing rings.</li>
-  <li><strong>Palace of Compassion and Tranquility.</strong> Where empress dowagers lived.</li>
+  <li><strong>Palace of Compassion and Tranquility (Cining Palace).</strong> Where empress dowagers lived.</li>
 </ol>
 <h3>East side</h3>
 <ol class="spots" start="16">
