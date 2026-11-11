@@ -169,7 +169,12 @@ FC_MAP = AI / 'penyola-artifacts/marketing/pinterest/images/map-fc-whole-3000.jp
 FC_MAP_WEB_W = 1200
 
 
+FC_AREAS = ['outer', 'inner', 'west', 'east']  # 2:3 area maps, 1000 x 1500, shown as they are
+
+
 def fc_map(tm):
+    for area in FC_AREAS:
+        save(Image.open(FC_MAP.parent / f'fc-area-{area}-2x3.jpg').convert('RGB'), IMG / f'fc-area-{area}.webp', tm, quality=85)
     im = Image.open(FC_MAP).convert('RGB')
     save(im.resize((FC_MAP_WEB_W, round(im.height * FC_MAP_WEB_W / im.width)), Image.LANCZOS), IMG / 'fc-map.webp', tm, quality=82)
     save(im, IMG / 'fc-map-full.jpg', tm, quality=85)

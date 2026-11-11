@@ -1263,6 +1263,7 @@ FC_MAP = Article(
   <a href="@ROOT@assets/img/fc-map-full.jpg"><img src="@ROOT@assets/img/fc-map.webp" alt="Hand-drawn map of the Forbidden City with the Classic route in red, the Full route in dark green and 21 numbered spots" width="1200" height="3600"></a>
   <figcaption><span class="map-credit">© Penyola · <a href="https://penyola.com/">penyola.com</a></span><br>Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> · <a href="@ROOT@assets/img/fc-map-full.jpg">Full size (3000 × 9000 px, 3.2 MB)</a></figcaption>
 </figure>
+<p class="area-nav">Zoom in by area: <a href="@ROOT@forbidden-city/map/outer-court/">outer court</a> (spots 1–6) · <a href="@ROOT@forbidden-city/map/inner-court/">inner court and garden</a> (7–11) · <a href="@ROOT@forbidden-city/map/west-side/">west side</a> (12–15) · <a href="@ROOT@forbidden-city/map/east-side/">east side</a> (16–21).</p>
 
 <h2>Which route should I take?</h2>
 <p><strong>The Classic route</strong> (red) walks straight up the middle: about 1 hour 35 minutes and 1.8 km. It takes in spots 1 to 4 and 7 to 11, from the bronze lions to the Imperial Garden, and leaves by the Gate of Divine Might. Take this one if you have a morning, or if it is your first visit.</p>
@@ -1315,7 +1316,135 @@ FC_MAP = Article(
 <p>Yes, for your own trip: save the full-size image to your phone before you go, since mobile data can be slow inside the palace. Please link to this page rather than re-posting the map elsewhere.</p>
 ''')
 
-ARTICLES = [GREAT_WALL, THREE_DAYS, AIRPORT, TEMPLE_OF_HEAVEN, JINGSHAN_VIEW, HALF_DAY, FC_MAP, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
+
+# The whole-palace map split into four areas, /forbidden-city/map/<area>/. Spot texts follow the app's own
+# stories (each sourced to the Palace Museum) and dpm.org.cn notices; the numbers match the big map.
+DPM_TICKETS = ('Palace Museum: tickets, including the Treasure Gallery and Clock Gallery', 'https://intl.dpm.org.cn/visit.html?l=en')
+DPM_HOURS = ('Palace Museum: opening hours and last entry to the galleries', 'https://www.dpm.org.cn/Visit.html')
+AREA_ORDER = [('outer-court', 'Outer court'), ('inner-court', 'Inner court'), ('west-side', 'West side'), ('east-side', 'East side')]
+FC_AREAS = {
+    'outer-court': dict(
+        image='fc-area-outer.webp', count=6,
+        title='Forbidden City Outer Court Map: the Big Halls, 6 Spots',
+        description='Map of the Forbidden City outer court: the bronze lions, the three great halls and the halls of Military Prowess and Literary Glory, with what to look for at each.',
+        h1='Forbidden City map: the outer court',
+        intro="The outer court is the southern half of the palace, where the court held its great ceremonies. You walk into it straight after the Meridian Gate. Spots 1 to 4 are on the Classic route up the middle; 5 and 6 sit off to the west and east, behind their own gates.",
+        spots='''
+<h2>1. Bronze lions</h2>
+<p>A pair of Ming dynasty bronze lions guards the approach to the Gate of Supreme Harmony. Look under their paws: one rests a paw on a ball, the other has a cub. The gate behind them has been closed for building work since 3 August 2026, but you see the lions from the square in front.</p>
+<h2>2. Hall of Supreme Harmony</h2>
+<p>The biggest hall in the palace, used for enthronements, imperial weddings and the other great ceremonies. It burned and was rebuilt more than once; what stands today follows the rebuilding of 1695. Count the ten little beasts on the roof corners, then look along the terrace for the sundial, the standard measure and the bronze tortoises and cranes. More in <a href="@ROOT@forbidden-city/hall-of-supreme-harmony/">the Hall of Supreme Harmony</a> and <a href="@ROOT@forbidden-city/roof-guardians/">the roof guardians</a>.</p>
+<h2>3. Hall of Central Harmony</h2>
+<p>The small square hall between the two big ones. Before a grand ceremony the emperor stopped here to rest, go over the procedures and get ready. Its small size is the point: a pause between two very large buildings.</p>
+<h2>4. Hall of Preserving Harmony</h2>
+<p>Court banquets were held here, and from the Qianlong reign the final round of the highest imperial examination. Walk round the back for the largest carved stone ramp in the palace, dragons moving through clouds down a single sloping slab. You see it from the path; it is part of the stairway, not a sculpture you can walk round.</p>
+<h2>5. Hall of Military Prowess</h2>
+<p>A palace complex west of the great halls. It became the centre of imperial book production, and the movable-type editions printed here were known as Wuying Hall editions. The Palace Museum closed it from 19 October 2026 for repairs and conservation.</p>
+<h2>6. Hall of Literary Glory</h2>
+<p>On the east side, near the East Glorious Gate exit. In the Ming and Qing dynasties the court held spring and autumn lectures here: officials explained passages from the Confucian classics and the emperor replied.</p>''',
+        sources=[('Palace Museum: Gate of Supreme Harmony closed from 3 August', 'https://www.dpm.org.cn/announce_detail/379422.html'),
+                 ('Palace Museum: Hall of Military Prowess closed from 19 October 2026', 'https://www.dpm.org.cn/announce_detail/379651.html'),
+                 ('Palace Museum: Hall of Supreme Harmony', 'https://www.dpm.org.cn/explore/building/236465.html'),
+                 ('Palace Museum: Hall of Preserving Harmony', 'https://www.dpm.org.cn/explore/building/236434.html'),
+                 ('Palace Museum: Hall of Literary Glory', 'https://www.dpm.org.cn/explore/building/236531.html'),
+                 ('Palace Museum: Hall of Military Prowess', 'https://www.dpm.org.cn/explore/building/236500.html')]),
+    'inner-court': dict(
+        image='fc-area-inner.webp', count=5,
+        title='Forbidden City Inner Court Map: Palaces and Garden, 5 Spots',
+        description='Map of the Forbidden City inner court and Imperial Garden: the Gate and Palace of Heavenly Purity, the Hall of Union, the Palace of Earthly Tranquility and the garden.',
+        h1='Forbidden City map: the inner court and the garden',
+        intro="North of the great halls, the inner court was where the emperor and empress lived. All five spots are on the Classic route, one after another up the middle, ending in the Imperial Garden just before the north exit.",
+        spots='''
+<h2>7. Gate of Heavenly Purity</h2>
+<p>The gate into the inner palace. A pair of gilded bronze lions marks the change; compare their bright surfaces with the darker bronze lions you passed further south.</p>
+<h2>8. Palace of Heavenly Purity</h2>
+<p>Built as the emperor's residence. After the Yongzheng Emperor moved to the Hall of Mental Cultivation, it was used for audiences, government business and banquets. Above the throne hangs a plaque reading Zhengda Guangming, "upright and bright"; under the Qing system of secret succession, the sealed name of the chosen heir was kept behind it.</p>
+<h2>9. Hall of Union</h2>
+<p>The small square hall between the emperor's palace and the empress's. Qing empresses received formal greetings here, and the court kept its twenty-five imperial seals here, in cases on either side of the throne. It also holds two ways of telling time: a copper water clock and a large striking clock.</p>
+<h2>10. Palace of Earthly Tranquility</h2>
+<p>The empress's residence in the Ming dynasty. After the Qing rebuilt it, most of the rooms were used for Manchu shamanic rites, while the eastern rooms kept an imperial wedding chamber.</p>
+<h2>11. Imperial Garden</h2>
+<p>Laid out in 1420, at the north end of the central axis, with Qin'an Hall in the middle. Look down at the paths, made of pebble pictures in different colours, and find the two cypresses whose trunks have grown together. The Gate of Divine Might, the north exit, is just beyond.</p>''',
+        sources=[('Palace Museum: Palace of Heavenly Purity', 'https://www.dpm.org.cn/explore/building/236472.html'),
+                 ('Palace Museum: Hall of Union', 'https://www.dpm.org.cn/explore/building/236467.html'),
+                 ('Palace Museum: Palace of Earthly Tranquility', 'https://www.dpm.org.cn/explore/building/236487.html'),
+                 ('Palace Museum: Imperial Garden', 'https://www.dpm.org.cn/explore/building/236519.html')]),
+    'west-side': dict(
+        image='fc-area-west.webp', count=4,
+        title='Forbidden City West Side Map: Palaces and Courtyards, 4 Spots',
+        description="Map of the Forbidden City's west side: the Hall of Mental Cultivation, the Palace of Gathered Elegance, the Palace of Earthly Honor and Cining Palace.",
+        h1='Forbidden City map: the west side',
+        intro="West of the inner court is a maze of smaller palaces and courtyards where later emperors worked and the imperial women lived. None of these spots is on the Classic route: turn left (west) off the central axis after the Palace of Heavenly Purity. It is quieter than the middle, and the courtyards are small enough to take in properly.",
+        spots='''
+<h2>12. Hall of Mental Cultivation</h2>
+<p>From the Yongzheng Emperor on, this is where emperors lived and did their daily work, instead of the Palace of Heavenly Purity on the central axis.</p>
+<h2>13. Palace of Gathered Elegance</h2>
+<p>In the courtyard stand bronze dragons, with raised heads and curling bodies, and spotted bronze deer, a familiar lucky subject in Chinese art. Paired figures like these bring a sense of ceremony into a much smaller space than the great courts.</p>
+<h2>14. Palace of Earthly Honor</h2>
+<p>Look up for small metal fittings that once held a swing. They are easy to miss, and a rare glimpse of everyday palace life rather than ceremony.</p>
+<h2>15. Palace of Compassion and Tranquility (Cining Palace)</h2>
+<p>The palace of the empress dowagers. It was founded in 1536 and repaired many times under the Qing; Empress Dowager Xiaozhuang moved here in 1653. Later it housed senior imperial women and hosted ceremonies in honour of the dowagers. It lies further southwest, apart from the other three.</p>''',
+        sources=[('Palace Museum: Palace of Heavenly Purity (the move to the Hall of Mental Cultivation)', 'https://www.dpm.org.cn/explore/building/236472.html'),
+                 ('Palace Museum: Palace of Compassion and Tranquility', 'https://www.dpm.org.cn/explore/building/236504.html')]),
+    'east-side': dict(
+        image='fc-area-east.webp', count=6,
+        title='Forbidden City East Side Map: Galleries and Gardens, 6 Spots',
+        description="Map of the Forbidden City's east side: flowering courtyards, Lingzhaoxuan, the Clock and Watch Gallery, the Nine-Dragon Screen and the Treasure Gallery, with which need extra tickets.",
+        h1='Forbidden City map: the east side',
+        intro="The east side has the flowering courtyards of the eastern palaces and, further east, the two galleries that need their own tickets. Turn right (east) off the central axis after the Palace of Heavenly Purity. Spots 19, 20 and 21 are inside ticketed areas; the rest are covered by your entry ticket.",
+        spots='''
+<h2>16. Palace of Celestial Favor</h2>
+<p>Known for its pear trees. When they flower in spring, the pale blossom stands out against the strong colours of the buildings; the dates depend on the weather.</p>
+<h2>17. Palace of Accumulated Purity</h2>
+<p>Magnolias fill the courtyard. They are best in flower, but their branching shape changes the feel of the space at any time of year.</p>
+<h2>18. Lingzhaoxuan</h2>
+<p>An unfinished building in the Palace of Prolonging Happiness (Yanxi Palace), often called the Crystal Palace. The nickname is misleading: it was never finished as a glass palace, and what you see is the surviving structure of a project that stopped. Yanxi Palace was closed for a survey in September and October 2026 and reopened on 1 November.</p>
+<h2>19. Clock and Watch Gallery</h2>
+<p>Clocks from the imperial collection, shown in the Hall for Ancestral Worship. <strong>Separate ticket: ¥10.</strong> Last entry is 16:10 from April to October and 15:40 from November to March.</p>
+<h2>20. Nine-Dragon Screen</h2>
+<p>A glazed-tile wall 29.4 metres long and 3.5 metres high, made in 1772 when the Qianlong Emperor rebuilt the Palace of Tranquil Longevity. Start with the yellow dragon in the centre, then follow the other eight across the clouds and waves. <strong>It is inside the Treasure Gallery area, so it needs the Treasure Gallery ticket.</strong></p>
+<h2>21. Treasure Gallery</h2>
+<p>Gold, jade and jewelled objects from the Qing court, shown in the halls of the Palace of Tranquil Longevity. The ticket also covers the opera and stone drum galleries in the same area. The old pines by the gates here have been nicknamed the Eighteen Arhats. <strong>Separate ticket: ¥10.</strong> Last entry is 16:10 from April to October and 15:40 from November to March.</p>''',
+        sources=[('Palace Museum: Yanxi Palace closed 1 September–31 October 2026, reopened 1 November', 'https://www.dpm.org.cn/announce_detail/379516.html'),
+                 ('Palace Museum: Nine-Dragon Screen', 'https://www.dpm.org.cn/explore/building/236477.html'),
+                 ('Palace Museum: Treasure Gallery', 'https://www.dpm.org.cn/pavilion/249617.html')]),
+}
+
+
+def fc_area_article(key):
+    a = FC_AREAS[key]
+    name = dict(AREA_ORDER)[key]
+    others = ' · '.join(f'<a href="@ROOT@forbidden-city/map/{k}/">{n}</a>' if k != key else f'<strong>{n}</strong>' for k, n in AREA_ORDER)
+    nav = f'<p class="area-nav">The palace by area: {others} · <a href="@ROOT@forbidden-city/map/">whole map</a></p>'
+    body = f"""
+{nav}
+<p>{a['intro']}</p>
+<figure class="big-map area-map">
+  <img src="@ROOT@assets/img/{a['image']}" alt="Hand-drawn map of the Forbidden City {name.lower()} with {a['count']} numbered spots" width="1000" height="1500">
+  <figcaption><span class="map-credit">© Penyola · <a href="https://penyola.com/">penyola.com</a></span><br>Map data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a></figcaption>
+</figure>
+{a['spots']}
+
+<h2>Tickets and opening</h2>
+<p>Everyone enters at the Meridian Gate and leaves by the Gate of Divine Might or the East Glorious Gate. The palace is closed on Mondays, except public holidays. Book your entry ticket online with your passport; see <a href="@ROOT@forbidden-city/tickets-for-foreigners/">how to book</a>.</p>
+{nav}
+"""
+    return Article(
+        path=f'forbidden-city/map/{key}/', short=f'Forbidden City {name.lower()}', title=a['title'], description=a['description'],
+        eyebrow='Forbidden City · map', h1=a['h1'], image=None, image_alt='', about=FORBIDDEN_CITY,
+        related=['forbidden-city/map/', 'forbidden-city/half-day-route/', 'forbidden-city/entrance-and-exit/'],
+        checked='2026-11-11', og_image=a['image'], body=body,
+        sources=a['sources'] + [DPM_TICKETS, DPM_HOURS],
+        extra_ld=[{'@context': 'https://schema.org', '@type': 'ImageObject', 'name': a['h1'], 'description': a['description'],
+                   'contentUrl': f"https://penyola.com/assets/img/{a['image']}", 'width': 1000, 'height': 1500, 'encodingFormat': 'image/webp',
+                   'creditText': '© Penyola · penyola.com; map data © OpenStreetMap contributors', 'copyrightNotice': '© Penyola',
+                   'creator': {'@type': 'Organization', 'name': 'Penyola', 'url': 'https://penyola.com/'},
+                   'acquireLicensePage': 'https://penyola.com/credits.html', 'contentLocation': FORBIDDEN_CITY}])
+
+
+FC_AREA_PAGES = [fc_area_article(k) for k, _ in AREA_ORDER]
+
+ARTICLES = [GREAT_WALL, THREE_DAYS, AIRPORT, TEMPLE_OF_HEAVEN, JINGSHAN_VIEW, HALF_DAY, FC_MAP, *FC_AREA_PAGES, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
             SP_ROUTE, CORRIDOR, MARBLE, VISA_FREE, NO_GOOGLE, ADDRESS]
 
 
