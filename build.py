@@ -6,12 +6,16 @@ published text never drifts from what users read in the app. Run after those fil
 
     python3 build.py [path/to/penyola-release]
 """
-import hashlib, json, pathlib, re, sys
+import argparse, hashlib, json, pathlib, re, sys
 from articles import ARTICLES, CHECK, CHECKED, CITY_HUBS
 from media import COMMONS, LICENCES, PHOTOS
 
 SITE = pathlib.Path(__file__).resolve().parent
-RELEASE = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else SITE.parent / 'penyola-release')
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('release', nargs='?', default=str(SITE.parent / 'penyola-release'))
+parser.add_argument('--only', nargs='+', help='Generate only these HTML paths plus sitemap and crawler files')
+args = parser.parse_args()
+RELEASE = pathlib.Path(args.release)
 LEGAL = RELEASE / 'app/engine/iphone/Maps/ScenicResources/legal'
 config = json.loads((RELEASE / 'release-config.json').read_text())
 EMAIL = config['support_email']
@@ -461,7 +465,11 @@ def build_demo():
     return len(pois), len(demo_routes)
 
 
-DEMO_STATS = build_demo()
+if args.only and 'demo.html' not in args.only:
+    existing_demo = json.loads((SITE / 'assets/demo/jingshan.json').read_text())
+    DEMO_STATS = (len(existing_demo['pois']), len(existing_demo['routes']))
+else:
+    DEMO_STATS = build_demo()
 
 DEMO = f"""
 <section class="demo-head wrap">
@@ -624,6 +632,8 @@ def article_page(a):
     root = '../' * a.path.count('/')
     by_path = {x.path: x for x in ARTICLES}
     related = ''.join(f'\n    <li><a href="{root}{p}">{by_path[p].h1}</a></li>' for p in a.related)
+    if not related:
+        related = f'<li><a href="{root}guides/">Browse all planning guides</a></li>'
     video_html, video = video_section(a.video)
     credits = ''.join(f'\n    <li>{photo_credit(f)}</li>' for f in a.photos)
     if credits:
@@ -680,11 +690,11 @@ pages = {
     'credits.html': ('Credits – Penyola', 'Content credits, map data attribution and open-source notices for Penyola.',
                      legal_page(legal_body('content-credits') + '\n<hr>\n' + (SITE_CREDITS + '\n<hr>\n' if SITE_CREDITS else '') + VIDEO_PHOTO_CREDITS + '\n<hr>\n' + legal_body('notice')), ''),
 }
-GROUPS = [('Forbidden City', 'forbidden-city/'), ('Jingshan Park', 'jingshan-park/'), ('Summer Palace', 'summer-palace/'), ('Beijing', 'beijing/')]
-GUIDES_HUB = '\n<section class="doc wrap">\n  <p class="eyebrow">Plan your visit</p>\n  <h1>Planning guides</h1>\n  <p class="lede">Tickets, routes, timing and the stories behind the sights, for the Forbidden City, Jingshan Park and the Summer Palace.</p>' + ''.join(
+GROUPS = [('Forbidden City', 'forbidden-city/'), ('Jingshan Park', 'jingshan-park/'), ('Summer Palace', 'summer-palace/'), ('Beijing', 'beijing/'), ('Chengdu Panda Base', 'chengdu-panda-base/')]
+GUIDES_HUB = '\n<section class="doc wrap">\n  <p class="eyebrow">Plan your visit</p>\n  <h1>Planning guides</h1>\n  <p class="lede">Tickets, routes, timing and the stories behind the sights, for Beijing’s imperial sights and Chengdu Panda Base.</p>' + ''.join(
     f'\n  <h2>{name}</h2>\n  <ul>' + (f'\n    <li><a href="../{prefix}first-time/">{CITY_HUBS[prefix[:-1]]["h1"]}</a></li>' if prefix[:-1] in CITY_HUBS else '') + ''.join(f'\n    <li><a href="../{a.path}">{a.h1}</a></li>' for a in ARTICLES if a.path.startswith(prefix)) + '\n  </ul>'
     for name, prefix in GROUPS) + '\n</section>\n'
-pages['guides/index.html'] = ('Planning guides – Penyola', 'Planning guides for Beijing: Forbidden City tickets and routes, Jingshan Park, the Summer Palace, and getting around without Google.', GUIDES_HUB, '')
+pages['guides/index.html'] = ('Planning guides – Penyola', 'Planning guides for Beijing and Chengdu: imperial sights, Panda Base landmarks, tickets, routes and getting around.', GUIDES_HUB, '')
 pages['press/index.html'] = ('Press kit – Penyola', 'Penyola press kit: one-line description, key facts, app icon and screenshots, and contact for press and partnerships.', PRESS, '')
 heads, images = {}, {}
 for a in ARTICLES:
@@ -697,7 +707,7 @@ for city, hub in CITY_HUBS.items():
 # Pages the user wants left exactly as published: never regenerated (they stay in the sitemap).
 FROZEN = {'support.html'}
 for file, (title, desc, main, cls) in pages.items():
-    if file in FROZEN:
+    if file in FROZEN or (args.only and file not in args.only):
         continue
     scripts = '<script src="assets/demo.js?v=' + hashlib.sha1((SITE / 'assets/demo.js').read_bytes()).hexdigest()[:8] + '" defer></script>\n' if file == 'demo.html' else ''
     (SITE / file).parent.mkdir(parents=True, exist_ok=True)

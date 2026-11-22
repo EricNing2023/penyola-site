@@ -1444,7 +1444,25 @@ def fc_area_article(key):
 
 FC_AREA_PAGES = [fc_area_article(k) for k, _ in AREA_ORDER]
 
-ARTICLES = [GREAT_WALL, THREE_DAYS, AIRPORT, TEMPLE_OF_HEAVEN, JINGSHAN_VIEW, HALF_DAY, FC_MAP, *FC_AREA_PAGES, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
+
+PANDA_SOUTH_GATE = Article(
+    path='chengdu-panda-base/south-gate-walk/',
+    short='Panda Base South Gate',
+    title='Chengdu Panda Base: first landmarks from the South Gate',
+    description='Find four landmarks from Chengdu Panda Base’s South Gate, with an illustrated orientation guide and the No. 6 Panda Villa Monday closure to know.',
+    eyebrow='Chengdu · walking notes',
+    h1='At the Panda Base? Start with the right gate.',
+    image=None, image_alt='',
+    og_image='chengdu-south-gate-landmarks.webp',
+    about={'@type': 'TouristAttraction', 'name': 'Chengdu Research Base of Giant Panda Breeding', 'sameAs': 'https://www.panda.org.cn/'},
+    cta=False,
+    checked='2026-11-21', published='2026-11-21',
+    related=[],
+    sources=[('Chengdu Panda Base: official map and routes', 'https://www.panda.org.cn/en/service/map/'),
+             ('Chengdu Panda Base: visitor rules and Monday closure', 'https://www.panda.org.cn/cn/service/notice/')],
+    body='<p>The South Gate and West Gate lead into different parts of Chengdu Panda Base. This short guide starts at the South Gate and focuses on the older Panda Villa Area. If your arrival point is the West Gate, use the base\'s official map to plan from there.</p><figure style="margin:32px 0;max-width:640px"><img style="width:100%;height:auto;border-radius:16px" src="@ROOT@assets/img/chengdu-south-gate-landmarks.webp" alt="Illustrated Panda Base detail with South Gate, No. 6 Panda Villa, Sun Nursery and Moon Nursery numbered in order." width="1000" height="1500"><figcaption>© Penyola · penyola.com. Illustrated orientation guide. Numbered pins identify landmarks, not enclosure entrances. Gray dotted connectors point to the landmarks.</figcaption></figure><h2>Four names to keep in mind</h2><ol><li><strong>South Gate.</strong> Find your position here before choosing your first stop.</li><li><strong>No. 6 Panda Villa.</strong> Use this as an early landmark in the villa area. Check the closure note below before making it a must-see.</li><li><strong>Sun Nursery.</strong> Continue your visit toward the nursery area, using the public paths and current signs.</li><li><strong>Moon Nursery.</strong> This is the last landmark in our short excerpt. The illustrated line is an orientation aid, not a measured navigation track.</li></ol><div class="notice"><strong>Visiting on a Monday?</strong><p>No. 6 Panda Villa is closed on Mondays, except Chinese statutory public holidays. Do not follow this excerpt through a closed area. Ask staff for the open public path before continuing. The base may also close areas temporarily for animal care, maintenance or weather.</p></div><h2>Plan around the animals</h2><p>A nursery name is not a promise that cubs will be on view. Animals and visitor access can change. Stay on public paths and respect barriers. The official visitor rules ask guests to keep quiet, turn off flash and never feed the animals.</p><h2>Check the official map before setting off</h2><p>The base\'s map page links to its official mini program for tour routes. Use that and on-site signs for the day\'s access. Our illustration helps you recognize the sequence of landmarks; it does not identify every viewing entrance or temporary diversion.</p><p class="fine">Landmark layout also cross-checked against the archived February 2026 official panoramic map. AI-assisted illustration.</p>')
+
+ARTICLES = [PANDA_SOUTH_GATE, GREAT_WALL, THREE_DAYS, AIRPORT, TEMPLE_OF_HEAVEN, JINGSHAN_VIEW, HALF_DAY, FC_MAP, *FC_AREA_PAGES, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
             SP_ROUTE, CORRIDOR, MARBLE, VISA_FREE, NO_GOOGLE, ADDRESS]
 
 

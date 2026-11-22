@@ -43,3 +43,9 @@ The build also writes `robots.txt`, `sitemap.xml` and the IndexNow key file; aft
 
 The "In the works" section on the home page (`NEXT` in `build.py`) previews maps still in development (area-focused site maps only, no mountain landscapes),
 from `penyola-artifacts/test-catalog/`. It promises no dates. Update it as guides ship.
+
+For a targeted publication without rebuilding unrelated pages or demo assets:
+
+    python3 build.py --only chengdu-panda-base/south-gate-walk/index.html guides/index.html
+
+This still updates the complete sitemap and crawler files. Chengdu is a web planning guide; it makes no claim that the App Store app includes this destination.
