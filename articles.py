@@ -50,6 +50,9 @@ JS_PARKS_CENTRE = ('Beijing Municipal Administration Center of Parks: Jingshan P
 SP_GOV = ('Beijing Municipal Government: Summer Palace', 'https://english.beijing.gov.cn/specials/parktours/guidevisitors/summerpalace/')
 SP_SITE = ('Summer Palace official site: hours, tickets and boats', 'https://www.summerpalace.net.cn/')
 NIA_TRANSIT = ('National Immigration Administration: visa-free transit', 'https://www.nia.gov.cn/n741440/n741577/c1731205/content.html')
+MFA_VISA_FREE = ('China Consular Services (Ministry of Foreign Affairs): FAQs on visa-free entry', 'https://cs.mfa.gov.cn/lh/lhqz_149493/cjwd/')
+GOV_HOLIDAYS_2027 = ('State Council: 2027 public holiday schedule', 'https://www.gov.cn/zhengce/content/202611/content_7085101.htm')
+BJ_CLIMATE = ('Beijing Municipal Government: geography and climate', 'https://english.beijing.gov.cn/beijinginfo/facts/202006/t20200601_1912281.html')
 
 FORBIDDEN_CITY = {
     '@type': 'TouristAttraction', 'name': 'Forbidden City (Palace Museum)', 'alternateName': '故宫',
@@ -574,29 +577,30 @@ CROWDS = Article(
     about=FORBIDDEN_CITY,
     related=['forbidden-city/winter-and-snow/', 'forbidden-city/tickets-for-foreigners/', 'forbidden-city/half-day-route/'],
     published='2026-11-07',
-    checked='2026-11-09',
-    sources=[DPM_VISIT, DPM_RULES],
+    checked='2026-11-23',
+    sources=[DPM_VISIT, DPM_RULES, GOV_HOLIDAYS_2027],
     body='''
 <h2>When is the Forbidden City most crowded?</h2>
-<p>During China's national holidays: Golden Week (1–7 October), the May Day holiday (around 1–5 May) and Chinese New Year (late January or February), plus the summer school holidays in July and August. On those days tickets are gone within minutes of release, seven days ahead. The quietest times are weekday mornings from March to April and from late October to mid-December, outside the holidays.</p>
+<p>During China's national holidays: Golden Week (1–7 October), the May Day holiday (around 1–5 May) and Chinese New Year (5–13 February in 2027), plus the summer school holidays in July and August. On those days tickets are gone within minutes of release, seven days ahead. The quietest times are weekday mornings from March to April and from late October to mid-December, outside the holidays.</p>
 
 <h2>Does the palace get overcrowded?</h2>
 <p>Not as badly as an unlimited site: every ticket is sold in advance, by name and for a morning or afternoon session, so the number of visitors is set by the booking system. That moves the problem to booking: on busy dates the challenge is getting a ticket, not the crowd inside. See <a href="@ROOT@forbidden-city/tickets-for-foreigners/">how to book with a passport</a>.</p>
 
 <h2>Which Chinese holidays should I avoid?</h2>
+<p>The State Council has published the 2027 public holidays. These are the dates to avoid, plus the summer school holidays in July and August, which are busy every day.</p>
 <table>
-  <thead><tr><th>Holiday</th><th>When</th><th>Crowds</th></tr></thead>
+  <thead><tr><th>Holiday</th><th>2027 dates</th><th>Crowds</th></tr></thead>
   <tbody>
-    <tr><td>Chinese New Year (Spring Festival)</td><td>Late January or February, about 8 days</td><td>Very busy</td></tr>
-    <tr><td>Qingming Festival</td><td>Early April, about 3 days</td><td>Busy</td></tr>
+    <tr><td>New Year's Day</td><td>1–3 January</td><td>Busy</td></tr>
+    <tr><td>Chinese New Year (Spring Festival)</td><td>5–13 February</td><td>Very busy</td></tr>
+    <tr><td>Qingming Festival</td><td>3–5 April</td><td>Busy</td></tr>
     <tr><td>May Day</td><td>1–5 May</td><td>Very busy</td></tr>
-    <tr><td>Dragon Boat Festival</td><td>June, about 3 days</td><td>Busy</td></tr>
-    <tr><td>Summer school holidays</td><td>July and August</td><td>Busy every day</td></tr>
-    <tr><td>Mid-Autumn Festival</td><td>September or early October</td><td>Busy</td></tr>
+    <tr><td>Dragon Boat Festival</td><td>9 June</td><td>Busy</td></tr>
+    <tr><td>Mid-Autumn Festival</td><td>15 September</td><td>Busy</td></tr>
     <tr><td>National Day Golden Week</td><td>1–7 October</td><td>The busiest week of the year</td></tr>
   </tbody>
 </table>
-<p>The exact dates move each year with the lunar calendar and are announced by the State Council near the end of the previous year. Check them before you book flights.</p>
+<p>The palace opens on public holidays even when they fall on a Monday. For the make-up working days and the rest of the year, see <a href="@ROOT@beijing/best-time-to-visit/">the best time to visit Beijing</a>.</p>
 
 <h2>What is the best day of the week?</h2>
 <p>Tuesday to Thursday. The palace is closed on Mondays (except public holidays), so Tuesdays catch some people who could not come the day before, and weekends are busier everywhere in Beijing. Avoid the day before or after a holiday too.</p>
@@ -1245,10 +1249,12 @@ FC_MAP = Article(
     image_alt='',
     about=FORBIDDEN_CITY,
     related=['forbidden-city/half-day-route/', 'forbidden-city/entrance-and-exit/', 'forbidden-city/tickets-for-foreigners/', 'jingshan-park/best-view-of-the-forbidden-city/'],
-    checked='2026-11-10',
+    checked='2026-11-23',
+    published='2026-11-10',
     og_image='fc-map.webp',
     sources=[('Palace Museum: opening hours, tickets and exits', 'https://www.dpm.org.cn/Visit.html'),
-             ('Palace Museum: Hall of Military Prowess closed from 19 October 2026', 'https://www.dpm.org.cn/announce_detail/379651.html')],
+             ('Palace Museum: Hall of Military Prowess closed from 19 October 2026', 'https://www.dpm.org.cn/announce_detail/379651.html'),
+             ('Palace Museum: Yanxi Palace closed from 4 November 2026', 'https://www.dpm.org.cn/announce_detail/379784.html')],
     extra_ld=[{'@context': 'https://schema.org', '@type': 'ImageObject', 'name': 'Forbidden City map: two routes and 21 spots',
                'description': 'Hand-drawn map of the Forbidden City in Beijing with the Classic route (about 1 h 35 min, 1.8 km) and the Full route (about 4 h, 4.6 km), the Meridian Gate entrance, the Gate of Divine Might and East Glorious Gate exits, and 21 numbered spots.',
                'contentUrl': 'https://penyola.com/assets/img/fc-map-full.jpg', 'thumbnailUrl': 'https://penyola.com/assets/img/fc-map.webp',
@@ -1306,7 +1312,7 @@ FC_MAP = Article(
 <ol class="spots" start="16">
   <li><strong>Palace of Celestial Favor.</strong> Pear blossom in spring.</li>
   <li><strong>Palace of Accumulated Purity.</strong> Magnolias in the courtyard.</li>
-  <li><strong>Lingzhaoxuan.</strong> An unfinished building nicknamed the Crystal Palace.</li>
+  <li><strong>Lingzhaoxuan.</strong> An unfinished building nicknamed the Crystal Palace. Yanxi Palace, where it stands, has been closed since 4 November 2026.</li>
   <li><strong>Clock and Watch Gallery.</strong> Imperial clocks. Its own small ticket.</li>
   <li><strong>Nine-Dragon Screen.</strong> Nine dragons in glazed tile.</li>
   <li><strong>Treasure Gallery.</strong> Its own ticket. Old pines inside.</li>
@@ -1398,14 +1404,14 @@ FC_AREAS = {
 <h2>17. Palace of Accumulated Purity</h2>
 <p>Magnolias fill the courtyard. They are best in flower, but their branching shape changes the feel of the space at any time of year.</p>
 <h2>18. Lingzhaoxuan</h2>
-<p>An unfinished building in the Palace of Prolonging Happiness (Yanxi Palace), often called the Crystal Palace. The nickname is misleading: it was never finished as a glass palace, and what you see is the surviving structure of a project that stopped. Yanxi Palace was closed for a survey in September and October 2026 and reopened on 1 November.</p>
+<p>An unfinished building in the Palace of Prolonging Happiness (Yanxi Palace), often called the Crystal Palace. The nickname is misleading: it was never finished as a glass palace, and what you see is the surviving structure of a project that stopped. <strong>Closed for now:</strong> the Palace Museum closed Yanxi Palace again on 4 November 2026 for conservation work, with no reopening date announced.</p>
 <h2>19. Clock and Watch Gallery</h2>
 <p>Clocks from the imperial collection, shown in the Hall for Ancestral Worship. <strong>Separate ticket: ¥10.</strong> Last entry is 16:10 from April to October and 15:40 from November to March.</p>
 <h2>20. Nine-Dragon Screen</h2>
 <p>A glazed-tile wall 29.4 metres long and 3.5 metres high, made in 1772 when the Qianlong Emperor rebuilt the Palace of Tranquil Longevity. Start with the yellow dragon in the centre, then follow the other eight across the clouds and waves. <strong>It is inside the Treasure Gallery area, so it needs the Treasure Gallery ticket.</strong></p>
 <h2>21. Treasure Gallery</h2>
 <p>Gold, jade and jewelled objects from the Qing court, shown in the halls of the Palace of Tranquil Longevity. The ticket also covers the opera and stone drum galleries in the same area. The old pines by the gates here have been nicknamed the Eighteen Arhats. <strong>Separate ticket: ¥10.</strong> Last entry is 16:10 from April to October and 15:40 from November to March.</p>''',
-        sources=[('Palace Museum: Yanxi Palace closed 1 September–31 October 2026, reopened 1 November', 'https://www.dpm.org.cn/announce_detail/379516.html'),
+        sources=[('Palace Museum: Yanxi Palace closed from 4 November 2026', 'https://www.dpm.org.cn/announce_detail/379784.html'),
                  ('Palace Museum: Nine-Dragon Screen', 'https://www.dpm.org.cn/explore/building/236477.html'),
                  ('Palace Museum: Treasure Gallery', 'https://www.dpm.org.cn/pavilion/249617.html')]),
 }
@@ -1433,7 +1439,7 @@ def fc_area_article(key):
         path=f'forbidden-city/map/{key}/', short=f'Forbidden City {name.lower()}', title=a['title'], description=a['description'],
         eyebrow='Forbidden City · map', h1=a['h1'], image=None, image_alt='', about=FORBIDDEN_CITY,
         related=['forbidden-city/map/', 'forbidden-city/half-day-route/', 'forbidden-city/entrance-and-exit/'],
-        checked='2026-11-11', og_image=a['image'], body=body,
+        checked='2026-11-23', published='2026-11-11', og_image=a['image'], body=body,
         sources=a['sources'] + [DPM_TICKETS, DPM_HOURS],
         extra_ld=[{'@context': 'https://schema.org', '@type': 'ImageObject', 'name': a['h1'], 'description': a['description'],
                    'contentUrl': f"https://penyola.com/assets/img/{a['image']}", 'width': 1000, 'height': 1500, 'encodingFormat': 'image/webp',
@@ -1462,7 +1468,161 @@ PANDA_SOUTH_GATE = Article(
              ('Chengdu Panda Base: visitor rules and Monday closure', 'https://www.panda.org.cn/cn/service/notice/')],
     body='<p>The South Gate and West Gate lead into different parts of Chengdu Panda Base. This short guide starts at the South Gate and focuses on the older Panda Villa Area. If your arrival point is the West Gate, use the base\'s official map to plan from there.</p><figure style="margin:32px 0;max-width:640px"><img style="width:100%;height:auto;border-radius:16px" src="@ROOT@assets/img/chengdu-south-gate-landmarks.webp" alt="Illustrated Panda Base detail with South Gate, No. 6 Panda Villa, Sun Nursery and Moon Nursery numbered in order." width="1000" height="1500"><figcaption>© Penyola · penyola.com. Illustrated orientation guide. Numbered pins identify landmarks, not enclosure entrances. Gray dotted connectors point to the landmarks.</figcaption></figure><h2>Four names to keep in mind</h2><ol><li><strong>South Gate.</strong> Find your position here before choosing your first stop.</li><li><strong>No. 6 Panda Villa.</strong> Use this as an early landmark in the villa area. Check the closure note below before making it a must-see.</li><li><strong>Sun Nursery.</strong> Continue your visit toward the nursery area, using the public paths and current signs.</li><li><strong>Moon Nursery.</strong> This is the last landmark in our short excerpt. The illustrated line is an orientation aid, not a measured navigation track.</li></ol><div class="notice"><strong>Visiting on a Monday?</strong><p>No. 6 Panda Villa is closed on Mondays, except Chinese statutory public holidays. Do not follow this excerpt through a closed area. Ask staff for the open public path before continuing. The base may also close areas temporarily for animal care, maintenance or weather.</p></div><h2>Plan around the animals</h2><p>A nursery name is not a promise that cubs will be on view. Animals and visitor access can change. Stay on public paths and respect barriers. The official visitor rules ask guests to keep quiet, turn off flash and never feed the animals.</p><h2>Check the official map before setting off</h2><p>The base\'s map page links to its official mini program for tour routes. Use that and on-site signs for the day\'s access. Our illustration helps you recognize the sequence of landmarks; it does not identify every viewing entrance or temporary diversion.</p><p class="fine">Landmark layout also cross-checked against the archived February 2026 official panoramic map. AI-assisted illustration.</p>')
 
-ARTICLES = [PANDA_SOUTH_GATE, GREAT_WALL, THREE_DAYS, AIRPORT, TEMPLE_OF_HEAVEN, JINGSHAN_VIEW, HALF_DAY, FC_MAP, *FC_AREA_PAGES, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
+VISA_ENTRY = Article(
+    path='beijing/visa-free-entry/',
+    short='Visa-free entry to China',
+    title='China visa-free entry: 30-day waiver and 240-hour transit',
+    description='Who can enter China without a visa: the 30-day waiver for 50 countries (most end 31 Dec 2026) and 240-hour transit for 57, incl. the US. Beijing rules.',
+    eyebrow='Before you fly',
+    h1='Can I visit Beijing without a visa?',
+    image=None,
+    image_alt='',
+    about=BEIJING,
+    related=['beijing/visa-free-transit-2-day-plan/', 'beijing/airport-to-city/', 'beijing/without-google/'],
+    city='beijing',
+    checked='2026-11-23',
+    sources=[MFA_VISA_FREE, NIA_TRANSIT],
+    body='''
+<p>Probably, if you hold an ordinary passport from one of two lists. Citizens of 50 countries, including the UK, Canada, Australia, Japan, Korea and most of the EU, can stay up to 30 days for tourism with no visa. US citizens are not on that list, but they and citizens of 56 other countries can use 240-hour visa-free transit: up to 10 days in China on the way to a third country, arriving at Beijing Capital or Beijing Daxing airport. <strong>For 48 of the 50 countries, the 30-day waiver currently runs until 31 December 2026.</strong> Brunei has no end date and Russia runs to 31 December 2027.</p>
+
+<h2>Which scheme applies to me?</h2>
+<table>
+  <thead><tr><th></th><th>30-day visa waiver</th><th>240-hour visa-free transit</th></tr></thead>
+  <tbody>
+    <tr><td>Countries</td><td>50</td><td>57</td></tr>
+    <tr><td>Includes the US?</td><td>No</td><td>Yes</td></tr>
+    <tr><td>Longest stay</td><td>30 days, counted from the day after you arrive</td><td>10 days</td></tr>
+    <tr><td>Onward ticket</td><td>Not a condition; the ministry suggests carrying your air tickets</td><td>Required: a confirmed, dated ticket to a third country or region</td></tr>
+    <tr><td>Area limit</td><td>None on the ministry's page</td><td>Only the permitted areas of the 24 listed provinces; for Beijing's airports, the Beijing municipality</td></tr>
+    <tr><td>Ports</td><td>Any port open to foreigners</td><td>65 listed ports, two of them in Beijing</td></tr>
+    <tr><td>End date</td><td>31 December 2026 for 48 countries</td><td>None given</td></tr>
+  </tbody>
+</table>
+<p>If you qualify for both, the 30-day waiver is simpler: there is no transit condition, it works at any open port and it gives you longer.</p>
+
+<h2>Which countries get 30 days without a visa?</h2>
+<p>Ordinary passport holders of these 50 countries: Andorra, Argentina, Australia, Austria, Bahrain, Belgium, Brazil, Brunei, Bulgaria, Canada, Chile, Croatia, Cyprus, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Iceland, Ireland, Italy, Japan, the Republic of Korea, Kuwait, Latvia, Liechtenstein, Luxembourg, Malta, Monaco, Montenegro, the Netherlands, New Zealand, North Macedonia, Norway, Oman, Peru, Poland, Portugal, Romania, Russia, Saudi Arabia, Slovakia, Slovenia, Spain, Sweden, Switzerland, the United Kingdom and Uruguay.</p>
+<p>The waiver covers business, tourism, visiting family or friends, exchanges and transit. It does not cover work, study or journalism. Children follow the same rules as adults, and tour groups and independent travellers are treated the same.</p>
+
+<h2>What are the rules for the 30-day waiver?</h2>
+<ul>
+  <li>You need an ordinary passport valid for at least the length of your stay. Travel documents and emergency passports do not qualify.</li>
+  <li>The 30 days start the day after you enter and run for 30 calendar days.</li>
+  <li>You can fly in from any country, and enter at any sea, land or air port open to foreigners.</li>
+  <li>You can use it again on later trips. There is currently no limit on the number of entries or total days.</li>
+  <li>You do not need to register with an embassy beforehand.</li>
+  <li>Border officers decide on entry. The ministry recommends carrying papers that match your trip, such as your air tickets and hotel bookings.</li>
+  <li>To stay longer than 30 days, get a visa before you travel.</li>
+</ul>
+
+<h2>What happens after 31 December 2026?</h2>
+<p>For 48 of the 50 countries, the ministry's page gives 31 December 2026 as the end date, and no extension had been announced when we checked on 23 November 2026. If your trip runs into 2027, check the Ministry of Foreign Affairs page linked below before you book, or ask your nearest Chinese embassy. We recheck it every week and will update this page when it changes.</p>
+
+<h2>How does 240-hour visa-free transit work?</h2>
+<p>Citizens of 57 countries can enter China without a visa when they are passing through to a third country or region:</p>
+<ul>
+  <li>Carry an ordinary passport and a confirmed onward ticket with a fixed date and itinerary, to a third country or region. Beijing back to the country you came from is not transit.</li>
+  <li>Arrive through one of 65 listed ports in 24 provinces. In Beijing these are <strong>Beijing Capital International Airport</strong> and <strong>Beijing Daxing International Airport</strong>.</li>
+  <li>Stay up to 10 days. Arriving in Beijing, you can stay in the Beijing municipality; the immigration administration says transit travellers can also move between the permitted areas of the 24 provinces within the 240 hours.</li>
+  <li>Tourism, business, visits and family visits are allowed. Work, study and journalism need a visa.</li>
+</ul>
+<p>The 57 countries:</p>
+<ul>
+  <li><strong>Europe (40):</strong> Albania, Austria, Belarus, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, the Czech Republic, Denmark, Estonia, Finland, France, Germany, Greece, Hungary, Iceland, Ireland, Italy, Latvia, Lithuania, Luxembourg, Malta, Monaco, Montenegro, the Netherlands, North Macedonia, Norway, Poland, Portugal, Romania, Russia, Serbia, Slovakia, Slovenia, Spain, Sweden, Switzerland, Ukraine and the United Kingdom.</li>
+  <li><strong>Americas (6):</strong> Argentina, Brazil, Canada, Chile, Mexico and the United States.</li>
+  <li><strong>Oceania (2):</strong> Australia and New Zealand.</li>
+  <li><strong>Asia (9):</strong> Brunei, Indonesia, Japan, Kyrgyzstan, Qatar, the Republic of Korea, Singapore, the United Arab Emirates and Vietnam.</li>
+</ul>
+<p>For a plan that fits a short transit stop, see <a href="@ROOT@beijing/visa-free-transit-2-day-plan/">Beijing in 2 days on visa-free transit</a>.</p>
+
+<h2>What about a short layover?</h2>
+<p>All open ports allow 24-hour transit without a visa for travellers of any nationality who stay in the airport's restricted area and have a confirmed onward ticket. To leave the airport, you need a temporary entry permit from the border inspection officers.</p>
+
+<h2>What should I sort out once I know I can go?</h2>
+<ul>
+  <li>Book the Forbidden City: tickets open at 20:00 Beijing time, seven days ahead, and you book with your passport. See <a href="@ROOT@forbidden-city/tickets-for-foreigners/">how to book</a>.</li>
+  <li>Set up payments and mobile data before you fly. See <a href="@ROOT@beijing/without-google/">Beijing without Google</a>.</li>
+  <li>Plan the trip from the airport. See <a href="@ROOT@beijing/airport-to-city/">airport to the city</a>.</li>
+</ul>
+<p>The rules and country lists change. This page follows the Ministry of Foreign Affairs and National Immigration Administration pages below; they, and the border officers on the day, have the final word.</p>
+''')
+
+BEST_TIME = Article(
+    path='beijing/best-time-to-visit/',
+    short='Best time to visit Beijing',
+    title='Best time to visit Beijing (2027 holidays to avoid)',
+    description="The best months for Beijing, China's 2027 public holidays to avoid, and how opening hours and ticket prices at the big sights change between seasons.",
+    eyebrow='Beijing · timing',
+    h1='When is the best time to visit Beijing?',
+    image=None,
+    image_alt='',
+    about=BEIJING,
+    related=['forbidden-city/crowds-and-best-time/', 'forbidden-city/winter-and-snow/', 'beijing/3-day-itinerary/'],
+    city='beijing',
+    checked='2026-11-23',
+    sources=[BJ_CLIMATE, GOV_HOLIDAYS_2027, DPM_VISIT, SP_GOV, SP_SITE, JS_PARK,
+             ('Beijing Municipal Government: Temple of Heaven', 'https://english.beijing.gov.cn/specials/parktours/guidevisitors/templeofheaven/'),
+             ('Mutianyu Great Wall: visitor information', 'https://www.mutianyugreatwall.com/cnInformation')],
+    body='''
+<p>Spring and autumn, outside China's public holidays. Beijing's springs and autumns are short, its summers hot and rainy and its winters cold and dry, so April to May and September to October are the comfortable months. The catch is that the two biggest holidays fall in them: in 2027, avoid 1–5 May and 1–7 October. Winter is the budget choice: the Forbidden City costs ¥40 instead of ¥60 from November to March, but the sights close earlier.</p>
+
+<h2>What is Beijing's weather like through the year?</h2>
+<p>The city government describes a temperate, continental monsoon climate: short springs and autumns, hot and rainy summers, cold and dry winters. The average annual temperature is 11–14 °C. About three-quarters of the year's rain falls in summer, most of it in July and August.</p>
+<table>
+  <thead><tr><th>Season</th><th>What to expect</th><th>Plan for</th></tr></thead>
+  <tbody>
+    <tr><td>Spring (about April–May)</td><td>Short and mild</td><td>The May Day holiday; Jingshan's spring cultural season</td></tr>
+    <tr><td>Summer (June–August)</td><td>Hot, with most of the year's rain</td><td>Early starts; school holidays fill the sights</td></tr>
+    <tr><td>Autumn (about September–October)</td><td>Short and mild</td><td>Golden Week, 1–7 October</td></tr>
+    <tr><td>Winter (November–March)</td><td>Cold and dry</td><td>Earlier closing; lower prices; Chinese New Year</td></tr>
+  </tbody>
+</table>
+
+<h2>Which 2027 holidays should I avoid?</h2>
+<p>The State Council published the 2027 schedule on 5 November 2026. On these days the sights are at their busiest and Forbidden City tickets go fast.</p>
+<table>
+  <thead><tr><th>Holiday</th><th>Days off</th><th>Make-up working days</th></tr></thead>
+  <tbody>
+    <tr><td>New Year's Day</td><td>Fri 1 – Sun 3 January</td><td>None</td></tr>
+    <tr><td>Spring Festival (Chinese New Year)</td><td>Fri 5 – Sat 13 February, 9 days</td><td>Sun 31 January, Sun 14 February</td></tr>
+    <tr><td>Qingming Festival</td><td>Sat 3 – Mon 5 April</td><td>None</td></tr>
+    <tr><td>Labour Day (May Day)</td><td>Sat 1 – Wed 5 May</td><td>Sat 8 May</td></tr>
+    <tr><td>Dragon Boat Festival</td><td>Wed 9 June</td><td>None</td></tr>
+    <tr><td>Mid-Autumn Festival</td><td>Wed 15 September</td><td>None</td></tr>
+    <tr><td>National Day (Golden Week)</td><td>Fri 1 – Thu 7 October</td><td>Sun 26 September, Sat 9 October</td></tr>
+  </tbody>
+</table>
+<p>Make-up working days are ordinary working days, even at weekends. The Forbidden City, which normally closes on Mondays, opens on public holidays, such as Monday 5 April 2027.</p>
+
+<h2>How do opening hours and prices change with the seasons?</h2>
+<p>Most of the big sights switch to winter hours on 1 November and back on 1 April. The Great Wall at Mutianyu switches on its own dates.</p>
+<table>
+  <thead><tr><th>Sight</th><th>April – October</th><th>November – March</th></tr></thead>
+  <tbody>
+    <tr><td><a href="@ROOT@forbidden-city/tickets-for-foreigners/">Forbidden City</a></td><td>08:30–17:00, last entry 16:00; ¥60</td><td>08:30–16:30, last entry 15:30; ¥40</td></tr>
+    <tr><td><a href="@ROOT@summer-palace/one-day-route/">Summer Palace</a> park</td><td>06:00–20:00, last entry 19:00; ¥30, combined ticket ¥60</td><td>06:30–19:00, last entry 18:00; ¥20, combined ticket ¥50</td></tr>
+    <tr><td>Summer Palace halls (Tower of Buddhist Incense and others)</td><td>08:00–18:00, last entry 17:30</td><td>08:30–17:00, last entry 16:30</td></tr>
+    <tr><td><a href="@ROOT@jingshan-park/best-view-of-the-forbidden-city/">Jingshan Park</a></td><td>06:00–21:00, last entry 20:30</td><td>06:30–20:00, last entry 19:30</td></tr>
+    <tr><td><a href="@ROOT@beijing/temple-of-heaven/">Temple of Heaven</a> park</td><td>06:00–22:00, last entry 21:00; ¥15, combined ticket ¥34</td><td>06:30–22:00, last entry 21:00; ¥10, combined ticket ¥28</td></tr>
+    <tr><td><a href="@ROOT@beijing/great-wall-which-section/">Mutianyu Great Wall</a></td><td colspan="2">16 March – 15 November: 07:30–18:00 on weekdays, 07:30–18:30 at weekends. 16 November – 15 March: 08:00–17:30.</td></tr>
+  </tbody>
+</table>
+<p>The Forbidden City, the halls inside the Temple of Heaven and the Summer Palace's inner gardens close on Mondays, except on public holidays. The parks themselves open every day.</p>
+
+<h2>What changes in each season at the sights?</h2>
+<ul>
+  <li><strong>Spring and midsummer:</strong> Jingshan Park holds cultural seasons, usually from mid or late April to May and from mid or late July to August, when the adult ticket rises from ¥2 to ¥10.</li>
+  <li><strong>Boating season:</strong> the Summer Palace boats on Kunming Lake stop for the winter; in 2026 they stopped on 2 November. In season, the boat from the Marble Boat to South Lake Island costs ¥40.</li>
+  <li><strong>Around the winter solstice:</strong> the setting sun lights up the inside of the Seventeen-Arch Bridge at the Summer Palace.</li>
+  <li><strong>Winter afternoons:</strong> last entry to the Forbidden City is 15:30, so start in the morning. See <a href="@ROOT@forbidden-city/winter-and-snow/">the Forbidden City in winter</a>.</li>
+</ul>
+
+<h2>What is the best day of the week?</h2>
+<p>Tuesday to Thursday. Mondays close the Forbidden City and the halls at the Temple of Heaven and the Summer Palace, and weekends are busier everywhere. If your trip includes a Monday, make it your Great Wall day. For hour-by-hour advice at the palace, see <a href="@ROOT@forbidden-city/crowds-and-best-time/">Forbidden City crowds</a>.</p>
+''')
+
+
+ARTICLES = [PANDA_SOUTH_GATE, VISA_ENTRY, BEST_TIME, GREAT_WALL, THREE_DAYS, AIRPORT, TEMPLE_OF_HEAVEN, JINGSHAN_VIEW, HALF_DAY, FC_MAP, *FC_AREA_PAGES, TICKETS, AUDIO, ENTRANCE, HALL, ROOF, WINTER, KIDS, CROWDS,
             SP_ROUTE, CORRIDOR, MARBLE, VISA_FREE, NO_GOOGLE, ADDRESS]
 
 
